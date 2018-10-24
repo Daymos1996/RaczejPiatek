@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "5722439251",
+    "firebase_url": "https://raczejpiatek-c17f5.firebaseio.com",
+    "project_id": "raczejpiatek-c17f5",
+    "storage_bucket": "raczejpiatek-c17f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5722439251:android:1b4a8fac9b751d18",
+        "android_client_info": {
+          "package_name": "com.example.kuba.raczejpiatek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5722439251-g9n6drho10icnbttbtov73tnat7bakr7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kuba.raczejpiatek",
+            "certificate_hash": "19eba84cae6b32fd04856ed2a7121d37618e22e0"
+          }
+        },
+        {
+          "client_id": "5722439251-lukthcjjaau7f11jqbc0vl501frnqk2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3UYoknrvaTXk5HeR3my1ha1akxnuPz_o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5722439251-lukthcjjaau7f11jqbc0vl501frnqk2r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

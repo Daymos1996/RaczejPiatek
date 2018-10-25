@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".register.RegisterActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0"
+        android:text="Rejestracja"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        />
+    <EditText
+        android:id="@+id/editTextNickName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:ems="10"
+        android:hint="nazwa użytkownika"
+        android:inputType="textPersonName" />
+
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:hint="adres email"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:hint="haslo"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:hint="numer telefonu (opcjonalne)"
+        android:ems="10"
+        android:inputType="phone" />
+
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:text="Zarejestruj" />
+
+
+</LinearLayout>

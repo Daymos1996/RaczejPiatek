@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -64,13 +65,13 @@ public class LoginActivity extends AppCompatActivity {
     private void LoginUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
+
         auth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             user = auth.getCurrentUser();
-                            finish();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         }

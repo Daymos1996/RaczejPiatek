@@ -77,6 +77,16 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if(TextUtils.isEmpty(username)){
+            Toast.makeText(this,"Podaj nazwe uzytkownika",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(TextUtils.isEmpty(phone)){
+            Toast.makeText(this,"Podaj numer telefony",Toast.LENGTH_LONG).show();
+            return;
+        }
+
         progressDialog.setMessage("Trwa proces rejestracji");
         progressDialog.show();
 

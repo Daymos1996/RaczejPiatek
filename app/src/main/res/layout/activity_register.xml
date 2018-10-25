@@ -62,7 +62,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:hint="numer telefonu (opcjonalne)"
+        android:hint="numer telefonu"
         android:ems="10"
         android:inputType="phone" />
 

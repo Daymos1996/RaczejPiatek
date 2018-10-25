@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.kuba.raczejpiatek.R;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.register.RegisterActivity;
+import com.example.kuba.raczejpiatek.user.profil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private TextView registerTextView;
     private Button logInButton;
+    private Button fblogInButton;
     private FirebaseDatabase database;
     private FirebaseUser user;
     private FirebaseAuth auth;
@@ -46,6 +48,19 @@ public class LoginActivity extends AppCompatActivity {
                 LoginUser();
             }
         });
+
+
+        /*
+        fblogInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, profil.class);
+                startActivity(intent);
+            }
+        });
+        */
+
+
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     private void init() {

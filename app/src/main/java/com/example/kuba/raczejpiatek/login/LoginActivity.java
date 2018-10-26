@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.example.kuba.raczejpiatek.R;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.register.RegisterActivity;
-import com.example.kuba.raczejpiatek.user.profil;
+import com.example.kuba.raczejpiatek.user.Profil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         fblogInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, profil.class);
+                Intent intent = new Intent(LoginActivity.this, Profil.class);
                 startActivity(intent);
             }
         });

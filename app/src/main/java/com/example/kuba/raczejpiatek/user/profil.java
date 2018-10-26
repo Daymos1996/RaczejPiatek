@@ -37,7 +37,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class profil extends AppCompatActivity {
+public class Profil extends AppCompatActivity {
 
     CallbackManager callbackManager;
     TextView txtEmail,txtBirthday,txtFriends,txtGender;

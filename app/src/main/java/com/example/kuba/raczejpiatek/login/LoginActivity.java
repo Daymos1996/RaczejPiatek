@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-
+        /*
         fblogInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        */
 
 
         registerTextView.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
         logInButton = (Button) findViewById(R.id.buttunLogIn);
         registerTextView = (TextView) findViewById(R.id.textViewRegister);
-        fblogInButton= (Button) findViewById(R.id.login_button);
     }
 
     private void LoginUser() {

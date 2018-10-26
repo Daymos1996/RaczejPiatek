@@ -44,11 +44,13 @@ public class profil extends AppCompatActivity {
     ProgressDialog mDialog;
     ImageView imgAvatar;
 
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode,resultCode,data);
     }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

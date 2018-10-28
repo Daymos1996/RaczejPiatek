@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".user.profil">
+    tools:context=".ProfilActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,13 +19,13 @@
             android:layout_height="250dp" />
 
         <TextView
-            android:id="@+id/txtEmail"
+            android:id="@+id/txtName"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/txtBirthday"
+            android:id="@+id/txtEmail"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content" />
         <TextView
 
-            android:id="@+id/txtFriends"
+            android:id="@+id/txtPhoneNumber"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

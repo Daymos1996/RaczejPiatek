@@ -5,12 +5,58 @@ public class User {
     private String email;
     private String password;
     private String phone;
+    private String gender;
+    private String profilURl;
+    private String first_name;
+    private String last_name;
+
 
     public User(String username, String email, String password, String phone) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.phone = phone;
+    }
+
+    public User(String email, String gender, String profilURl, String first_name, String last_name) {
+        this.email = email;
+        this.phone = phone;
+        this.gender = gender;
+        this.profilURl = profilURl;
+        this.first_name = first_name;
+        this.last_name = last_name;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getProfilURl() {
+        return profilURl;
+    }
+
+    public void setProfilURl(String profilURl) {
+        this.profilURl = profilURl;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
     }
 
     public String getUsername() {

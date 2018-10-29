@@ -1,6 +1,10 @@
 package com.example.kuba.raczejpiatek.login;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,10 +19,14 @@ import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.register.RegisterActivity;
+import com.example.kuba.raczejpiatek.user.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.Login;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,17 +38,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     private TextView registerTextView;
     private Button logInButton;
+    private Button fblogInButton;
     private FirebaseDatabase database;
     private FirebaseUser user;
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
 
     private static final String TAG = "FACELOG";
+    private static Activity activity;
 
 
     // Initialize Facebook Login button
@@ -64,7 +79,23 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback(){
+
+                            @Override
+                            public void onCompleted(JSONObject jsonObject,
+                                                    GraphResponse response) {
+
+                                // Getting FB User Data
+                                Bundle facebookData = getFacebookData(jsonObject);
+                            }
+                        });
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,first_name,last_name,email,gender");
+                        request.setParameters(parameters);
+                        request.executeAsync();
             }
 
             @Override
@@ -94,8 +125,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-
-    /* BEDZIE TRZEBA POPRAWIC
+/*
+    // BEDZIE TRZEBA POPRAWIC
     @Override
     public void onStart() {
         super.onStart();
@@ -106,12 +137,12 @@ public class LoginActivity extends AppCompatActivity {
        // }
 
     }
-    */
+*/
     private void updateUI(FirebaseUser currentUser) {
-        Toast.makeText(LoginActivity.this,"Udalo sie zalogowac ",Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
-        startActivity(intent);
-        finish();
+        Toast.makeText(LoginActivity.this,"Udalo sie zalogowac " ,Toast.LENGTH_LONG).show();
+       // Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
+       // startActivity(intent);
+      //  finish();
     }
 
 
@@ -177,5 +208,72 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    public static void saveFacebookUserInfo(String first_name, String last_name, String email, String gender, String profileURL){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("fb_first_name", first_name);
+        editor.putString("fb_last_name", last_name);
+        editor.putString("fb_email", email);
+        editor.putString("fb_gender", gender);
+        editor.putString("fb_profileURL", profileURL);
+        editor.apply(); // This line is IMPORTANT !!!
+        Log.d("MyApp", "Shared Name : "+first_name+"\nLast Name : "+last_name+"\nEmail : "+email+"\nGender : "+gender+"\nProfile Pic : "+profileURL);
+    }
+
+    /*
+    User user = new User(email,gender,profileURL,first_name,last_name);
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if (task.isSuccessful()) {
+                //  Toast.makeText(LoginActivity.this,"Dodano do bazy",Toast.LENGTH_LONG).show();
+            } else {
+                // Toast.makeText(LoginActivity.this,"fb nie dodano",Toast.LENGTH_LONG).show();
+            }
+        }
+    });
+    */
+
+    private Bundle getFacebookData(JSONObject object) {
+        Bundle bundle = new Bundle();
+
+        try {
+            String id = object.getString("id");
+            URL profile_pic;
+            try {
+                profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
+                Log.i("profile_pic", profile_pic + "");
+                bundle.putString("profile_pic", profile_pic.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            bundle.putString("idFacebook", id);
+            if (object.has("first_name"))
+                bundle.putString("first_name", object.getString("first_name"));
+            if (object.has("last_name"))
+                bundle.putString("last_name", object.getString("last_name"));
+            if (object.has("email"))
+                bundle.putString("email", object.getString("email"));
+            if (object.has("gender"))
+                bundle.putString("gender", object.getString("gender"));
+
+                        //Test ....
+                     Toast.makeText(LoginActivity.this,object.getString("first_name"),Toast.LENGTH_LONG).show();
+
+                    LoginActivity.saveFacebookUserInfo(object.getString("first_name"),
+                    object.getString("last_name"),object.getString("email"),
+                    object.getString("gender"), profile_pic.toString());
+
+        } catch (Exception e) {
+            Log.d(TAG, "BUNDLE Exception : "+e.toString());
+        }
+        return bundle;
+    }
+
+
 
 }

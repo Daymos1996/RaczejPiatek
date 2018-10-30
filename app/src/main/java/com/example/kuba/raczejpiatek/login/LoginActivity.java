@@ -81,21 +81,21 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback(){
+                        new GraphRequest.GraphJSONObjectCallback() {
 
                             @Override
                             public void onCompleted(JSONObject jsonObject,
                                                     GraphResponse response) {
 
                                 // Getting FB User Data
-                                Bundle facebookData = getFacebookData(jsonObject);
+                                getFacebookData(jsonObject);
                             }
                         });
-                        handleFacebookAccessToken(loginResult.getAccessToken());
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,first_name,last_name,email,gender");
-                        request.setParameters(parameters);
-                        request.executeAsync();
+                handleFacebookAccessToken(loginResult.getAccessToken());
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,first_name,last_name,email,gender");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
@@ -125,24 +125,25 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-/*
-    // BEDZIE TRZEBA POPRAWIC
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = auth.getCurrentUser();
-        //if(currentUser != null ){
-            updateUI(currentUser);
-       // }
 
-    }
-*/
+    /*
+        // BEDZIE TRZEBA POPRAWIC
+        @Override
+        public void onStart() {
+            super.onStart();
+            // Check if user is signed in (non-null) and update UI accordingly.
+            FirebaseUser currentUser = auth.getCurrentUser();
+            //if(currentUser != null ){
+                updateUI(currentUser);
+           // }
+
+        }
+    */
     private void updateUI(FirebaseUser currentUser) {
-        Toast.makeText(LoginActivity.this,"Udalo sie zalogowac " ,Toast.LENGTH_LONG).show();
-       // Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
-       // startActivity(intent);
-      //  finish();
+        Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
+        // Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
+        // startActivity(intent);
+        //  finish();
     }
 
 
@@ -175,11 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
-        }
-
-
-
-
+    }
 
 
     private void init() {
@@ -193,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        auth.signInWithEmailAndPassword(email,password)
+        auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -201,42 +198,14 @@ public class LoginActivity extends AppCompatActivity {
                             user = auth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                        }
-                        else {
+                        } else {
                             Toast.makeText(LoginActivity.this, "Błąd logowania", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
 
-    public static void saveFacebookUserInfo(String first_name, String last_name, String email, String gender, String profileURL){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("fb_first_name", first_name);
-        editor.putString("fb_last_name", last_name);
-        editor.putString("fb_email", email);
-        editor.putString("fb_gender", gender);
-        editor.putString("fb_profileURL", profileURL);
-        editor.apply(); // This line is IMPORTANT !!!
-        Log.d("MyApp", "Shared Name : "+first_name+"\nLast Name : "+last_name+"\nEmail : "+email+"\nGender : "+gender+"\nProfile Pic : "+profileURL);
-    }
-
-    /*
-    User user = new User(email,gender,profileURL,first_name,last_name);
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
-            if (task.isSuccessful()) {
-                //  Toast.makeText(LoginActivity.this,"Dodano do bazy",Toast.LENGTH_LONG).show();
-            } else {
-                // Toast.makeText(LoginActivity.this,"fb nie dodano",Toast.LENGTH_LONG).show();
-            }
-        }
-    });
-    */
-
-    private Bundle getFacebookData(JSONObject object) {
+    private void getFacebookData(JSONObject object) {
         Bundle bundle = new Bundle();
 
         try {
@@ -248,7 +217,6 @@ public class LoginActivity extends AppCompatActivity {
                 bundle.putString("profile_pic", profile_pic.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                return null;
             }
 
             bundle.putString("idFacebook", id);
@@ -261,17 +229,23 @@ public class LoginActivity extends AppCompatActivity {
             if (object.has("gender"))
                 bundle.putString("gender", object.getString("gender"));
 
-                        //Test ....
-                     Toast.makeText(LoginActivity.this,object.getString("first_name"),Toast.LENGTH_LONG).show();
-
-                    LoginActivity.saveFacebookUserInfo(object.getString("first_name"),
-                    object.getString("last_name"),object.getString("email"),
-                    object.getString("gender"), profile_pic.toString());
+            User user = new User(bundle.getString("email"), bundle.getString("gender"), bundle.getString("profile_pic"), bundle.getString("first_name"), bundle.getString("last_name"));
+            FirebaseDatabase.getInstance().getReference("Users")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this,"Dodano do bazy",Toast.LENGTH_LONG).show();
+                    } else {
+                         Toast.makeText(LoginActivity.this,"fb nie dodano",Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
         } catch (Exception e) {
-            Log.d(TAG, "BUNDLE Exception : "+e.toString());
+            Log.d(TAG, "BUNDLE Exception : " + e.toString());
         }
-        return bundle;
+
     }
 
 

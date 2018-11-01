@@ -113,6 +113,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LoginUser();
+                Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -141,9 +144,9 @@ public class LoginActivity extends AppCompatActivity {
     */
     private void updateUI(FirebaseUser currentUser) {
         Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
-        // Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
-        // startActivity(intent);
-        //  finish();
+        Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 

@@ -10,6 +10,10 @@ public class User {
     private String first_name;
     private String last_name;
 
+    public User(){
+
+    }
+
 
     public User(String username, String email, String password, String phone) {
         this.username = username;
@@ -20,7 +24,6 @@ public class User {
 
     public User(String email, String gender, String profilURl, String first_name, String last_name) {
         this.email = email;
-        this.phone = phone;
         this.gender = gender;
         this.profilURl = profilURl;
         this.first_name = first_name;

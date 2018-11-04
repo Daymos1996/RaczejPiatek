@@ -2,19 +2,24 @@ package com.example.kuba.raczejpiatek;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.login.LoginActivity;
+import com.example.kuba.raczejpiatek.main.MainActivity;
+import com.example.kuba.raczejpiatek.map.MapsActivity;
 import com.example.kuba.raczejpiatek.register.RegisterActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.facebook.AccessToken;
@@ -53,12 +58,14 @@ public class ProfilActivity extends AppCompatActivity {
     private ImageView profilURL;
     private TextView nickNameTextView;
     private TextView phoneNumberTextView;
+    private Button goToMapBtn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profil);
+        setTitle("Profil");
         init();
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -93,6 +100,14 @@ public class ProfilActivity extends AppCompatActivity {
 
             }
         });
+
+            goToMapBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfilActivity.this, MapsActivity.class);
+                    startActivity(intent);
+                }
+            });
 
     }
 
@@ -170,6 +185,7 @@ public class ProfilActivity extends AppCompatActivity {
         phoneNumberTextView =  findViewById(R.id.txtPhoneNumber);
         genderTextView=  findViewById(R.id.txtGender);
         profilURL=findViewById(R.id.avatar);
+        goToMapBtn = (Button) findViewById(R.id.go_to_map_btn);
 
     }
     private void toastMessage(String message){

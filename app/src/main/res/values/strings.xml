@@ -2,4 +2,5 @@
     <string name="app_name">RaczejPiatek</string>
     <string name="facebook_ap_id">1962363220546214</string>
     <string name="facebook_login_protocol_scheme">fb1962363220546214</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

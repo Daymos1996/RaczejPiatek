@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setTitle("Logowanie");
 
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -115,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
                 LoginUser();
                 Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 

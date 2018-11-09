@@ -1,80 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="30dp"
     tools:context=".register.RegisterActivity"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0"
-        android:text="Rejestracja"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        />
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/logo2"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editTextNickName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="49dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="0"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
+        android:drawableLeft="@drawable/ic_person_black_24dp"
         android:ems="10"
-        android:hint="nazwa użytkownika"
-        android:inputType="textPersonName" />
+        android:hint="NAZWA UŻYTKOWNIKA"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="0"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:hint="adres email"
+        android:drawableLeft="@drawable/ic_mail"
         android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:hint="ADRES EMAIL"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNickName" />
 
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="0"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:hint="haslo"
+        android:drawableLeft="@drawable/ic_lock"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:hint="HASŁO"
+        android:inputType="textPassword"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
     <EditText
         android:id="@+id/editTextPhone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="0"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:hint="numer telefonu"
+        android:drawableLeft="@drawable/ic_phone_black_24dp"
         android:ems="10"
-        android:inputType="phone" />
+        android:hint="NUMER TELEFONU"
+        android:inputType="phone"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
     <Button
         android:id="@+id/buttonRegister"
-        android:layout_width="match_parent"
+        android:layout_width="189dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="0"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:text="Zarejestruj" />
+        android:background="@drawable/mybutton"
+        android:text="Zarejestruj"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

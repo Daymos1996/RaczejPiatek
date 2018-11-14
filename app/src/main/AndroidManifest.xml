@@ -45,6 +45,7 @@
         <activity android:name=".register.RegisterActivity" />
         <activity android:name=".login.LoginActivity"/>
         <activity android:name=".ProfilActivity" />
+        <activity android:name=".map.MapsActivity" />
         <activity
             android:name=".splashScreen.SplashScreenActivity"
             android:theme="@style/SplashTheme">

@@ -3,4 +3,6 @@
     <string name="facebook_ap_id">1962363220546214</string>
     <string name="facebook_login_protocol_scheme">fb1962363220546214</string>
     <string name="title_activity_maps">Map</string>
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="facebook_status_fmt">Facebook User: %s</string>
 </resources>

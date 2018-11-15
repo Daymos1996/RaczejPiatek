@@ -1,6 +1,7 @@
 package com.example.kuba.raczejpiatek.login;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,12 +22,14 @@ import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.register.RegisterActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.Login;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,16 +50,19 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     private TextView registerTextView;
-    private Button logInButton;
-    private Button fblogInButton;
+    private Button logInButtonn;
+    private Button signout;
     private FirebaseDatabase database;
     private FirebaseUser user;
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
 
+
     private static final String TAG = "FACELOG";
     private static Activity activity;
 
+
+    public ProgressDialog mProgressDialog;
 
     // Initialize Facebook Login button
 
@@ -97,25 +103,29 @@ public class LoginActivity extends AppCompatActivity {
                 parameters.putString("fields", "id,first_name,last_name,email,gender");
                 request.setParameters(parameters);
                 request.executeAsync();
+
+
             }
 
             @Override
             public void onCancel() {
                 Log.d(TAG, "facebook:onCancel");
+                updateUI(null);
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
+                updateUI(null);
             }
         });
 
-        logInButton.setOnClickListener(new View.OnClickListener() {
+
+        logInButtonn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseUser user = auth.getCurrentUser();
+                updateUI(user);
                 LoginUser();
-                Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -126,6 +136,18 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int i = view.getId();
+                if (i == R.id.buttonFacebookSignout) {
+                    signOut();
+                }
+            }
+        });
+
+
 
     }
 
@@ -142,11 +164,19 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     */
-    private void updateUI(FirebaseUser currentUser) {
-        Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
-        startActivity(intent);
-        finish();
+    private void updateUI(FirebaseUser user) {
+        hideProgressDialog();
+
+        if (user != null) {
+            findViewById(R.id.login_button).setVisibility(View.GONE);
+            findViewById(R.id.buttonFacebookSignout).setVisibility(View.VISIBLE);
+
+        } else {
+            findViewById(R.id.login_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.buttonFacebookSignout).setVisibility(View.GONE);
+        }
+
+
     }
 
 
@@ -161,6 +191,8 @@ public class LoginActivity extends AppCompatActivity {
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
+        showProgressDialog();
+
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -171,12 +203,19 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = auth.getCurrentUser();
                             updateUI(user);
+
+                            Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
+                            startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            updateUI(null);
                         }
+
+
+                        hideProgressDialog();
                     }
                 });
     }
@@ -185,8 +224,9 @@ public class LoginActivity extends AppCompatActivity {
     private void init() {
         emailEditText = findViewById(R.id.editTextEmail);
         passwordEditText = findViewById(R.id.editTextPassword);
-        logInButton = findViewById(R.id.buttunLogIn);
+        logInButtonn = findViewById(R.id.buttunLogIn);
         registerTextView = findViewById(R.id.textViewRegister);
+        signout= findViewById(R.id.buttonFacebookSignout);
     }
 
     private void LoginUser() {
@@ -199,7 +239,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             user = auth.getCurrentUser();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+
+                            Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
                             startActivity(intent);
                         } else {
                             Toast.makeText(LoginActivity.this, "Błąd logowania", Toast.LENGTH_LONG).show();
@@ -249,6 +291,30 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "BUNDLE Exception : " + e.toString());
         }
 
+    }
+
+    public void signOut() {
+        auth.signOut();
+        LoginManager.getInstance().logOut();
+
+        updateUI(null);
+        Toast.makeText(LoginActivity.this,"wylogowales sie",Toast.LENGTH_LONG).show();
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("loading...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
     }
 
 

@@ -51,7 +51,6 @@ public class ProfilActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
-    private String userID;
     private TextView emailTextView;
     private TextView first_nameTextView;
     private TextView last_nameTextView;
@@ -61,6 +60,7 @@ public class ProfilActivity extends AppCompatActivity {
     private TextView phoneNumberTextView;
     private Button goToMapBtn;
     private Button goToFindFriendsBtn;
+    private String userID;
 
 
     @Override
@@ -178,6 +178,7 @@ public class ProfilActivity extends AppCompatActivity {
         }
             if(uInfo.getProfilURl()!=null) {
                 Picasso.with(this).load(uInfo.getProfilURl()).into(profilURL);
+
             }
 
         }
@@ -202,6 +203,7 @@ public class ProfilActivity extends AppCompatActivity {
     private void toastMessage(String message){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
+
 
 
 

@@ -21,6 +21,7 @@ import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
 import com.example.kuba.raczejpiatek.register.RegisterActivity;
+import com.example.kuba.raczejpiatek.searchfriends.searchFriendsActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -59,6 +60,7 @@ public class ProfilActivity extends AppCompatActivity {
     private TextView nickNameTextView;
     private TextView phoneNumberTextView;
     private Button goToMapBtn;
+    private Button goToFindFriendsBtn;
 
 
     @Override
@@ -105,6 +107,14 @@ public class ProfilActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ProfilActivity.this, MapsActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+             goToFindFriendsBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfilActivity.this, searchFriendsActivity.class);
                     startActivity(intent);
                 }
             });
@@ -186,6 +196,7 @@ public class ProfilActivity extends AppCompatActivity {
         genderTextView=  findViewById(R.id.txtGender);
         profilURL=findViewById(R.id.avatar);
         goToMapBtn = (Button) findViewById(R.id.go_to_map_btn);
+        goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
 
     }
     private void toastMessage(String message){

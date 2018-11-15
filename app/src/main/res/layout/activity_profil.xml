@@ -63,6 +63,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Mapa"/>
+
+        <Button
+            android:id="@+id/go_to_find_friends_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Find Friends"/>
     </LinearLayout>
 
 

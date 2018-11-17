@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -50,6 +52,8 @@ import com.squareup.picasso.RequestCreator;
 
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,6 +73,7 @@ public class ProfilActivity extends AppCompatActivity {
     private TextView nickNameTextView;
     private TextView phoneNumberTextView;
     private Button goToMapBtn;
+    private Button password;
     private Button deleteUser;
     private Button goToFindFriendsBtn;
     private String userID;
@@ -140,6 +145,59 @@ public class ProfilActivity extends AppCompatActivity {
                  }
              });
 
+             first_nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateFirstName(userID);
+                return false;
+            }
+        });
+            emailTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateEmail(userID);
+                return false;
+            }
+        });
+
+        last_nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateLastName(userID);
+                return false;
+            }
+        });
+
+        genderTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateGender(userID);
+                return false;
+            }
+        });
+
+        phoneNumberTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdatePhone(userID);
+                return false;
+            }
+        });
+        password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UpdatePassword(userID);
+            }
+        });
+        profilURL.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdatePhoto(userID);
+                return false;
+            }
+        });
+
+
 
     }
 
@@ -206,62 +264,6 @@ public class ProfilActivity extends AppCompatActivity {
         }
     }
 
-
-    public void updateProfile() {
-        // [START update_profile]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName("Jane Q. User")
-                .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
-                .build();
-
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User profile updated.");
-                        }
-                    }
-                });
-        // [END update_profile]
-    }
-
-    public void updateEmail() {
-        // [START update_email]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        user.updateEmail("user@example.com")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User email address updated.");
-                        }
-                    }
-                });
-        // [END update_email]
-    }
-
-
-    public void updatePassword() {
-        // [START update_password]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String newPassword = "SOME-SECURE-PASSWORD";
-
-        user.updatePassword(newPassword)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User password updated.");
-                        }
-                    }
-                });
-        // [END update_password]
-    }
-
     public void deleteUser(String userID) {
 
        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -290,69 +292,198 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
-    public void reauthenticate() {
-        // [START reauthenticate]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        // Get auth credentials from the user for re-authentication. The example below shows
-        // email and password credentials but there are multiple possible providers,
-        // such as GoogleAuthProvider or FacebookAuthProvider.
-        AuthCredential credential = EmailAuthProvider
-                .getCredential("jakub@jakub.pl", "jakub1");
-
-        // Prompt the user to re-provide their sign-in credentials
-        user.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "User re-authenticated.");
-                    }
-                });
-        // [END reauthenticate]
-    }
-
-    private boolean updateArtist(String id, String name) {
+    private boolean UpdateFirstName(final String userID) {
         //getting the specified artist reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("users").child(userID);
-
-        //updating artist
-        User user = new User();
-        user.setFirst_name(name);
-        Toast.makeText(getApplicationContext(), "Artist Updated", Toast.LENGTH_LONG).show();
-        return true;
-    }
-
-    private void showUpdateDeleteDialog(final String userID, String First_name) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.update_data, null);
         dialogBuilder.setView(dialogView);
-
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
-
         final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
-
-        dialogBuilder.setTitle(First_name);
         final AlertDialog b = dialogBuilder.create();
         b.show();
-
 
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = editTextName.getText().toString().trim();
                 if (!TextUtils.isEmpty(name)) {
-                    updateArtist(userID, name);
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("first_name").setValue(name);
+                    toastMessage("First Name update");
                     b.dismiss();
                 }
             }
         });
+
+        return true;
+    }
+    private boolean UpdateEmail(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user.updateEmail(name);
+                    dR.child("email").setValue(name);
+                    toastMessage("email update");
+                    b.dismiss();
+                }
+            }
+        });
+        return true;
     }
 
+    private boolean UpdatePassword(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user.updatePassword(name);
+                    dR.child("password").setValue(name);
+                    toastMessage("password update");
+                    b.dismiss();
+                }
+            }
+        });
+        return true;
+    }
+
+    private boolean UpdateLastName(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("last_name").setValue(name);
+                    toastMessage("Last name update");
+                    b.dismiss();
+                }
+            }
+        });
+
+        return true;
+    }
+
+    private boolean UpdateGender(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("gender").setValue(name);
+                    toastMessage("Gender update");
+                    b.dismiss();
+                }
+            }
+        });
+
+        return true;
+    }
+
+    private boolean UpdatePhone(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("phone").setValue(name);
+                    toastMessage("Phone number update");
+                    b.dismiss();
+                }
+            }
+        });
+
+        return true;
+    }
+
+    private boolean UpdatePhoto(final String userID) {
+        //getting the specified artist reference
+
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivity(intent);
+        Uri uri = intent.getData();
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
 
 
 
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            profilURL.setImageBitmap(bitmap);
+            dR.child("profilURl").setValue(profilURL);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
     private void init() {
         emailTextView =  findViewById(R.id.txtEmail);
         first_nameTextView =  findViewById(R.id.txtFirstName);
@@ -364,7 +495,10 @@ public class ProfilActivity extends AppCompatActivity {
         goToMapBtn = (Button) findViewById(R.id.go_to_map_btn);
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser =(Button) findViewById(R.id.deleteUser);
+        password = (Button) findViewById(R.id.changePassword);
+
     }
+    
     private void toastMessage(String message){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }

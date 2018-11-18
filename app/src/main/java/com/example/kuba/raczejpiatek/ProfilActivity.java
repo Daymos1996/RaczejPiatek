@@ -90,7 +90,17 @@ public class ProfilActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef=database.getReference();
         final FirebaseUser user=mAuth.getCurrentUser();
-        userID=user.getUid();
+
+        if(getIntent().hasExtra("key")){
+            userID = getIntent().getStringExtra("key");
+            goToMapBtn.setVisibility(View.GONE);
+            password.setVisibility(View.GONE);
+            deleteUser.setVisibility(View.GONE);
+            goToFindFriendsBtn.setVisibility(View.GONE);
+        }
+        else {
+            userID=user.getUid();
+        }
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -292,7 +302,6 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
-
     private boolean UpdateFirstName(final String userID) {
         //getting the specified artist reference
 
@@ -320,6 +329,7 @@ public class ProfilActivity extends AppCompatActivity {
 
         return true;
     }
+
     private boolean UpdateEmail(final String userID) {
         //getting the specified artist reference
 
@@ -484,6 +494,7 @@ public class ProfilActivity extends AppCompatActivity {
         }
         return true;
     }
+
     private void init() {
         emailTextView =  findViewById(R.id.txtEmail);
         first_nameTextView =  findViewById(R.id.txtFirstName);
@@ -502,10 +513,5 @@ public class ProfilActivity extends AppCompatActivity {
     private void toastMessage(String message){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
-
-
-
-
-
 
 }

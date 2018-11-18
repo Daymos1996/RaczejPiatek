@@ -1,6 +1,7 @@
 package com.example.kuba.raczejpiatek.searchfriends;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.FindFriends;
+import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
@@ -68,8 +70,18 @@ public class searchFriendsActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(FindFriendsViewHolder viewHolder, FindFriends model, int position) {
 
+                final String key = getRef(position).getKey();
                 viewHolder.setFullname(model.getFirst_name());
                 viewHolder.setProfileimage(getApplicationContext(), model.getProfilURl());
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(searchFriendsActivity.this, ProfilActivity.class);
+                        intent.putExtra("key", key);
+                        startActivity(intent);
+                    }
+                });
             }
         };
         result.setAdapter(firebaseRecyclerAdapter);

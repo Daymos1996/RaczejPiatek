@@ -62,9 +62,14 @@ public class ProfilActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private static final String TAG = "ViewDatabase";
+    private static final String FRIENDS_TABLE = "friends";
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
+    private DatabaseReference otherUserReference;
+    private DatabaseReference friendsOtherUserReference;
+    private DatabaseReference userReference;
+    private DatabaseReference friendsUserReference;
     private TextView emailTextView;
     private TextView first_nameTextView;
     private TextView last_nameTextView;
@@ -76,7 +81,9 @@ public class ProfilActivity extends AppCompatActivity {
     private Button password;
     private Button deleteUser;
     private Button goToFindFriendsBtn;
+    private Button inviteUserToFriends;
     private String userID;
+    private String currentUserID;
 
 
 
@@ -91,16 +98,32 @@ public class ProfilActivity extends AppCompatActivity {
         myRef=database.getReference();
         final FirebaseUser user=mAuth.getCurrentUser();
 
+
         if(getIntent().hasExtra("key")){
             userID = getIntent().getStringExtra("key");
+
+            currentUserID = user.getUid();
             goToMapBtn.setVisibility(View.GONE);
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
+            inviteUserToFriends.setVisibility(View.VISIBLE);
+
+            inviteUserToFriends.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addOtherUserToFriendsButtonOnClick(currentUserID,userID);
+                    inviteUserToFriends.setText("Zaproszenie wysłane");
+                }
+            });
+
+
+
         }
-        else {
+        else  {
             userID=user.getUid();
         }
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -495,6 +518,21 @@ public class ProfilActivity extends AppCompatActivity {
         return true;
     }
 
+    private void addOtherUserToFriendsButtonOnClick(String userID, String otherUserID) {
+        FirebaseDatabase firebaseDatabase;
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = firebaseDatabase.getReference("Users");
+
+        otherUserReference = myRef.child(otherUserID);
+        friendsOtherUserReference = otherUserReference.child(FRIENDS_TABLE);
+        friendsOtherUserReference.child(userID).setValue("false");
+
+        userReference = myRef.child(userID);
+        friendsUserReference = userReference.child(FRIENDS_TABLE);
+        friendsUserReference.child(otherUserID).setValue("false");
+
+        Toast.makeText(ProfilActivity.this, "Wysłano zaprszenie do znajomych",Toast.LENGTH_LONG).show();
+    }
     private void init() {
         emailTextView =  findViewById(R.id.txtEmail);
         first_nameTextView =  findViewById(R.id.txtFirstName);
@@ -507,9 +545,10 @@ public class ProfilActivity extends AppCompatActivity {
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser =(Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);
+        inviteUserToFriends = (Button) findViewById(R.id.invite_user_to_friends_btn);
 
     }
-    
+
     private void toastMessage(String message){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }

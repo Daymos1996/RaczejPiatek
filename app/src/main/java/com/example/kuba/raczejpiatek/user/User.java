@@ -1,5 +1,7 @@
 package com.example.kuba.raczejpiatek.user;
 
+import com.example.kuba.raczejpiatek.ProfilActivity;
+
 public class User {
     private String username;
     private String email;
@@ -9,9 +11,10 @@ public class User {
     private String profilURl;
     private String first_name;
     private String last_name;
+    private String lat;
+    private String lng;
 
     public User(){
-
     }
 
 
@@ -28,6 +31,10 @@ public class User {
         this.profilURl = profilURl;
         this.first_name = first_name;
         this.last_name = last_name;
+    }
+    public User(String lat, String lng) {
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public String getGender() {
@@ -92,5 +99,21 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

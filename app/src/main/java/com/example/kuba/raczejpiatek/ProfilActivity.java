@@ -2,6 +2,7 @@ package com.example.kuba.raczejpiatek;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -47,8 +49,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONObject;
 
@@ -70,6 +79,7 @@ public class ProfilActivity extends AppCompatActivity {
     private DatabaseReference friendsOtherUserReference;
     private DatabaseReference userReference;
     private DatabaseReference friendsUserReference;
+    private StorageReference mStorage;
     private TextView emailTextView;
     private TextView first_nameTextView;
     private TextView last_nameTextView;
@@ -83,6 +93,9 @@ public class ProfilActivity extends AppCompatActivity {
     private Button goToFindFriendsBtn;
     private Button inviteUserToFriends;
     private String userID;
+    private ProgressDialog mProgresDiaolog;
+    public static final int PICK_IMAGE = 1;
+    private Uri mImageProfileUri;
     private String currentUserID;
 
 
@@ -97,6 +110,12 @@ public class ProfilActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef=database.getReference();
         final FirebaseUser user=mAuth.getCurrentUser();
+        userID=user.getUid();
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mProgresDiaolog = new ProgressDialog(this);
+
+
+
 
 
         if(getIntent().hasExtra("key")){
@@ -185,10 +204,19 @@ public class ProfilActivity extends AppCompatActivity {
                 return false;
             }
         });
+
             emailTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 UpdateEmail(userID);
+                return false;
+            }
+        });
+
+        nickNameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateUsername(userID);
                 return false;
             }
         });
@@ -225,7 +253,7 @@ public class ProfilActivity extends AppCompatActivity {
         profilURL.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                UpdatePhoto(userID);
+                openFileChooser(userID);
                 return false;
             }
         });
@@ -325,6 +353,7 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
+
     private boolean UpdateFirstName(final String userID) {
         //getting the specified artist reference
 
@@ -353,6 +382,9 @@ public class ProfilActivity extends AppCompatActivity {
         return true;
     }
 
+
+
+
     private boolean UpdateEmail(final String userID) {
         //getting the specified artist reference
 
@@ -379,6 +411,36 @@ public class ProfilActivity extends AppCompatActivity {
                 }
             }
         });
+        return true;
+    }
+
+
+
+    private boolean UpdateUsername(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("username").setValue(name);
+                    toastMessage("Username update");
+                    b.dismiss();
+                }
+            }
+        });
+
         return true;
     }
 
@@ -495,28 +557,70 @@ public class ProfilActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean UpdatePhoto(final String userID) {
-        //getting the specified artist reference
-
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivity(intent);
-        Uri uri = intent.getData();
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-
-
-
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            profilURL.setImageBitmap(bitmap);
-            dR.child("profilURl").setValue(profilURL);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return true;
+    private void openFileChooser(final String userID) {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+       // intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(intent, PICK_IMAGE);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            Uri mImageProfileUri  = data.getData();
+            /*
+            CropImage.activity(imagePath)
+                    .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                    .setAspectRatio(1, 1)
+                    .start(ProfilActivity.this);
+        }
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode==RESULT_OK) {
+                mImageProfileUri = result.getUri();
+
+                Picasso.with(this).load(mImageProfileUri).into(profilURL);
+            }
+            else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
+                Exception error = result.getError();
+            }
+            */
+
+           // DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+           // dR.child("profilURl").setValue(mImageProfileUri);
+           // toastMessage("Username update");
+
+            mProgresDiaolog.setMessage("Uploading...");
+            mProgresDiaolog.show();
+
+            final StorageReference filepath = mStorage.child("profile_img").child(userID).child("profile_picture.jpg");
+            filepath.putFile(mImageProfileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    mProgresDiaolog.dismiss();
+                    toastMessage("Zaladowano zdjecie ");
+                }
+            });
+
+
+
+        //dodanie do bazy danych
+        filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri downloadUri) {
+                    String uploadId = downloadUri.toString();
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("profilURl").setValue(uploadId);
+                }
+            });
+        }
+      }
+
+
 
     private void addOtherUserToFriendsButtonOnClick(String userID, String otherUserID) {
         FirebaseDatabase firebaseDatabase;
@@ -545,12 +649,16 @@ public class ProfilActivity extends AppCompatActivity {
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser =(Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);
-        inviteUserToFriends = (Button) findViewById(R.id.invite_user_to_friends_btn);
 
     }
-
+    
     private void toastMessage(String message){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
+
+
+
+
+
 
 }

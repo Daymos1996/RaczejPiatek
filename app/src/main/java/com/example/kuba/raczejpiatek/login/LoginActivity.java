@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +33,8 @@ import com.facebook.login.Login;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -37,11 +42,19 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
@@ -53,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
+    private StorageReference mStorage;
 
     private static final String TAG = "FACELOG";
     private static Activity activity;
@@ -70,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        mStorage = FirebaseStorage.getInstance().getReference();
 
         init();
 
@@ -218,6 +233,8 @@ public class LoginActivity extends AppCompatActivity {
                 profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
                 Log.i("profile_pic", profile_pic + "");
                 bundle.putString("profile_pic", profile_pic.toString());
+                Toast.makeText(LoginActivity.this,bundle.getString("profile_pic"),Toast.LENGTH_LONG).show();
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

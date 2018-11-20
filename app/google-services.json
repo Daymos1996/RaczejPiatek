@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "339023513182-ce76kqjrtpgjmd1msdcgkl2lddaquqvl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kuba.raczejpiatek",
+            "certificate_hash": "7c439357c5a0a68f7b88a7326fb74c12268e4c05"
+          }
+        },
+        {
           "client_id": "339023513182-tp6spi41pf250b2ilnf5e41af5corbjc.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339023513182-tp6spi41pf250b2ilnf5e41af5corbjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

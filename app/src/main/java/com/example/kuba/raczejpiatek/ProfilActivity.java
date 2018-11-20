@@ -2,11 +2,13 @@ package com.example.kuba.raczejpiatek;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -35,7 +37,10 @@ import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -47,11 +52,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -65,6 +78,7 @@ public class ProfilActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
+    private StorageReference mStorage;
     private TextView emailTextView;
     private TextView first_nameTextView;
     private TextView last_nameTextView;
@@ -77,6 +91,9 @@ public class ProfilActivity extends AppCompatActivity {
     private Button deleteUser;
     private Button goToFindFriendsBtn;
     private String userID;
+    private ProgressDialog mProgresDiaolog;
+    public static final int PICK_IMAGE = 1;
+    private Uri mImageProfileUri;
 
 
 
@@ -91,6 +108,9 @@ public class ProfilActivity extends AppCompatActivity {
         myRef=database.getReference();
         final FirebaseUser user=mAuth.getCurrentUser();
         userID=user.getUid();
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mProgresDiaolog = new ProgressDialog(this);
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -152,6 +172,22 @@ public class ProfilActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+             last_nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateLastName(userID);
+                return false;
+            }
+        });
+
+            nickNameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                UpdateUsername(userID);
+                return false;
+            }
+        });
             emailTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -160,13 +196,7 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
 
-        last_nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                UpdateLastName(userID);
-                return false;
-            }
-        });
+
 
         genderTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -192,7 +222,7 @@ public class ProfilActivity extends AppCompatActivity {
         profilURL.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                UpdatePhoto(userID);
+                openFileChooser(userID);
                 return false;
             }
         });
@@ -256,7 +286,12 @@ public class ProfilActivity extends AppCompatActivity {
             else {
             phoneNumberTextView.setText(uInfo.getPhone());
         }
+
             if(uInfo.getProfilURl()!=null) {
+            //   mStorage=FirebaseStorage.getInstance();
+              //  myRef=FirebaseDatabase.getInstance().getReference("profilURl")
+             //   Uri photoProfil = uInfo.getProfilURl();
+              //  StorageReference photo =
                 Picasso.with(this).load(uInfo.getProfilURl()).into(profilURL);
 
             }
@@ -320,6 +355,63 @@ public class ProfilActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private boolean UpdateLastName(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("last_name").setValue(name);
+                    toastMessage("Last name update");
+                    b.dismiss();
+                }
+            }
+        });
+
+        return true;
+    }
+
+    private boolean UpdateUsername(final String userID) {
+        //getting the specified artist reference
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_data, null);
+        dialogBuilder.setView(dialogView);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = editTextName.getText().toString().trim();
+                if (!TextUtils.isEmpty(name)) {
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("username").setValue(name);
+                    toastMessage("Username update");
+                    b.dismiss();
+                }
+            }
+        });
+
+        return true;
+    }
+
     private boolean UpdateEmail(final String userID) {
         //getting the specified artist reference
 
@@ -378,33 +470,7 @@ public class ProfilActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean UpdateLastName(final String userID) {
-        //getting the specified artist reference
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.update_data, null);
-        dialogBuilder.setView(dialogView);
-        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
-        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
-        final AlertDialog b = dialogBuilder.create();
-        b.show();
-
-        buttonUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = editTextName.getText().toString().trim();
-                if (!TextUtils.isEmpty(name)) {
-                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-                    dR.child("last_name").setValue(name);
-                    toastMessage("Last name update");
-                    b.dismiss();
-                }
-            }
-        });
-
-        return true;
-    }
 
     private boolean UpdateGender(final String userID) {
         //getting the specified artist reference
@@ -462,28 +528,70 @@ public class ProfilActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean UpdatePhoto(final String userID) {
-        //getting the specified artist reference
-
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivity(intent);
-        Uri uri = intent.getData();
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-
-
-
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            profilURL.setImageBitmap(bitmap);
-            dR.child("profilURl").setValue(profilURL);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return true;
+    private void openFileChooser(final String userID) {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+       // intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(intent, PICK_IMAGE);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            Uri mImageProfileUri  = data.getData();
+            /*
+            CropImage.activity(imagePath)
+                    .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                    .setAspectRatio(1, 1)
+                    .start(ProfilActivity.this);
+        }
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode==RESULT_OK) {
+                mImageProfileUri = result.getUri();
+
+                Picasso.with(this).load(mImageProfileUri).into(profilURL);
+            }
+            else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
+                Exception error = result.getError();
+            }
+            */
+
+           // DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+           // dR.child("profilURl").setValue(mImageProfileUri);
+           // toastMessage("Username update");
+
+            mProgresDiaolog.setMessage("Uploading...");
+            mProgresDiaolog.show();
+
+            final StorageReference filepath = mStorage.child("profile_img").child(userID).child("profile_picture.jpg");
+            filepath.putFile(mImageProfileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    mProgresDiaolog.dismiss();
+                    toastMessage("Zaladowano zdjecie ");
+                }
+            });
+
+
+
+        //dodanie do bazy danych
+        filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri downloadUri) {
+                    String uploadId = downloadUri.toString();
+                    DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                    dR.child("profilURl").setValue(uploadId);
+                }
+            });
+        }
+      }
+
+
     private void init() {
         emailTextView =  findViewById(R.id.txtEmail);
         first_nameTextView =  findViewById(R.id.txtFirstName);

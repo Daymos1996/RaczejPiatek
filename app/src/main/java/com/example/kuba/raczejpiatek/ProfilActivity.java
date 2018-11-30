@@ -649,6 +649,7 @@ public class ProfilActivity extends AppCompatActivity {
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser =(Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);
+        inviteUserToFriends = findViewById(R.id.invite_user_to_friends_btn);
 
     }
     

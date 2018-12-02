@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kuba.raczejpiatek.friends.FriendsActivity;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
@@ -92,6 +93,7 @@ public class ProfilActivity extends AppCompatActivity {
     private Button deleteUser;
     private Button goToFindFriendsBtn;
     private Button inviteUserToFriends;
+    private Button goToFriends;
     private String userID;
     private ProgressDialog mProgresDiaolog;
     public static final int PICK_IMAGE = 1;
@@ -187,6 +189,15 @@ public class ProfilActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
+             goToFriends.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     Intent intent = new Intent(ProfilActivity.this, FriendsActivity.class);
+                     intent.putExtra("USER_ID", userID);
+                     startActivity(intent);
+                 }
+             });
 
              deleteUser.setOnClickListener(new View.OnClickListener() {
                  @Override
@@ -629,11 +640,11 @@ public class ProfilActivity extends AppCompatActivity {
 
         otherUserReference = myRef.child(otherUserID);
         friendsOtherUserReference = otherUserReference.child(FRIENDS_TABLE);
-        friendsOtherUserReference.child(userID).setValue("false");
+        friendsOtherUserReference.child(userID).setValue("received");
 
         userReference = myRef.child(userID);
         friendsUserReference = userReference.child(FRIENDS_TABLE);
-        friendsUserReference.child(otherUserID).setValue("false");
+        friendsUserReference.child(otherUserID).setValue("sent");
 
         Toast.makeText(ProfilActivity.this, "Wysłano zaprszenie do znajomych",Toast.LENGTH_LONG).show();
     }
@@ -649,6 +660,8 @@ public class ProfilActivity extends AppCompatActivity {
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser =(Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);
+        goToFriends = (Button) findViewById(R.id.go_to_friends_btn);
+        inviteUserToFriends = (Button) findViewById(R.id.invite_user_to_friends_btn);
 
     }
     

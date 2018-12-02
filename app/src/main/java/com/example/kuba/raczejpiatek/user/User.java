@@ -15,6 +15,7 @@ public class User {
     private String lng;
 
     public User(){
+
     }
 
 

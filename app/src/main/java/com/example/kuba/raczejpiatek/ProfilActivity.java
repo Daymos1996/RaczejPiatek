@@ -132,7 +132,7 @@ public class ProfilActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     addOtherUserToFriendsButtonOnClick(currentUserID,userID);
-                    inviteUserToFriends.setText("Zaproszenie wysłane");
+                    inviteUserToFriends.setText("invitation sent");
                 }
             });
 

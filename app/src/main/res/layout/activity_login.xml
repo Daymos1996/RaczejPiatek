@@ -4,49 +4,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/layout_background"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".login.LoginActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:srcCompat="@drawable/logo"
+        android:src="@drawable/logo"
+        />
 
     <EditText
         android:id="@+id/editTextEmail"
-        android:layout_width="match_parent"
+        android:drawableLeft="@drawable/ic_action_user"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_weight="0"
-        android:layout_marginTop="160dp"
         android:layout_marginLeft="32dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="32dp"
-        android:hint="nazwa użytkownika"
+        android:layout_weight="0"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Username"
+        android:textColor="#FF335F"
+        android:fontFamily="casual"
+        android:textStyle="bold"
+        android:background="#00000000"
         android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
+        android:drawableLeft="@drawable/ic_action_password"
+        android:layout_width="wrap_content"
+        android:gravity="center"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_weight="0"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="32dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="32dp"
-        android:hint="haslo"
+        android:layout_weight="0"
+        android:ems="10"
+        android:textColor="#FF335F"
+        android:hint="Password"
+        android:fontFamily="casual"
+        android:textStyle="bold"
+        android:background="#00000000"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/buttunLogIn"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="32dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="32dp"
-        android:text="Log In" />
+        android:layout_weight="0"
+        android:background="@drawable/button_background"
+        android:text="Log in"
+        android:textSize="30dp"
+        android:textColor="#2A3c58"
+        android:fontFamily="casual"
+        android:textStyle="bold"
+        />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
-        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        />
 
     <Button
         android:id="@+id/buttonFacebookSignout"
@@ -54,17 +84,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Wyloguj sie"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/textViewRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_weight="0"
+        android:layout_marginTop="30dp"
+        android:textColor="#FF335F"
+        android:textSize="15dp"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:textStyle="bold"
         android:clickable="true"
-        android:text="Zarejestruj się"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:text="Register"
+        android:drawableLeft="@drawable/ic_action_register"
+        />
+
 </LinearLayout>

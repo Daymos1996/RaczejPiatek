@@ -51,31 +51,19 @@ public class searchFriendsActivity extends AppCompatActivity {
 
         allUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        String searchText = editTextSearch.getText().toString();
-        searchFriends(searchText);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                result.setAdapter(adapter);
+                searchFriends();
+                adapter.startListening();
+
             }
         });
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-    private void searchFriends(String searchText) {
+    private void searchFriends() {
+        String searchText = editTextSearch.getText().toString();
         Query query = allUserDatabaseRef.orderByChild("first_name").startAt(searchText).endAt(searchText + "\uf8ff");
 
         FirebaseRecyclerOptions<FindFriends> options =
@@ -116,6 +104,7 @@ public class searchFriendsActivity extends AppCompatActivity {
             }
 
         };
+        result.setAdapter(adapter);
 
     }
 

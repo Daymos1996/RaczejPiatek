@@ -133,6 +133,13 @@
             android:text="Find Friends" />
 
         <Button
+            android:id="@+id/go_to_friends_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Friends" />
+
+        <Button
             android:id="@+id/deleteUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

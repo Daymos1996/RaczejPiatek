@@ -3,11 +3,10 @@
     package="com.example.kuba.raczejpiatek">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -68,7 +67,9 @@
             android:name=".map.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".addFriends.addFriend" />
-        <activity android:name=".searchfriends.searchFriendsActivity"></activity>
+        <activity android:name=".searchfriends.searchFriendsActivity" />
+        <activity android:name=".Friends.Friends" />
+        <activity android:name=".InviteFriendList.InviteFriendList"></activity>
     </application>
 
 </manifest>

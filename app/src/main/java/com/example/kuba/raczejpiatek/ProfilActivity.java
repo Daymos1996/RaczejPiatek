@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kuba.raczejpiatek.InviteFriendList.InviteFriendList;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
@@ -92,6 +93,7 @@ public class ProfilActivity extends AppCompatActivity {
     private Button deleteUser;
     private Button goToFindFriendsBtn;
     private Button inviteUserToFriends;
+    private Button inviteFriend;
     private String userID;
     private ProgressDialog mProgresDiaolog;
     public static final int PICK_IMAGE = 1;
@@ -195,6 +197,15 @@ public class ProfilActivity extends AppCompatActivity {
                      Intent intent = new Intent(ProfilActivity.this,LoginActivity.class);
                      startActivity(intent);
                  }
+             });
+
+
+            inviteFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfilActivity.this,InviteFriendList.class);
+                startActivity(intent);
+            }
              });
 
              first_nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -650,6 +661,7 @@ public class ProfilActivity extends AppCompatActivity {
         deleteUser =(Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);
         inviteUserToFriends = findViewById(R.id.invite_user_to_friends_btn);
+        inviteFriend = (Button) findViewById(R.id.inviteFriend);
 
     }
     

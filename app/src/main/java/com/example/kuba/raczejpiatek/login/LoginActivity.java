@@ -131,6 +131,8 @@ public class LoginActivity extends AppCompatActivity {
                 LoginUser();
                 Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
                 startActivity(intent);
+              //  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
             }
         });
 
@@ -160,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser currentUser) {
         Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
+      //  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

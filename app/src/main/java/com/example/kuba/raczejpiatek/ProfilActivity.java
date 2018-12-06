@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kuba.raczejpiatek.chat.Chat;
 import com.example.kuba.raczejpiatek.friends.FriendsActivity;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
@@ -70,6 +71,7 @@ public class ProfilActivity extends AppCompatActivity {
     private String userID;
     private ProgressDialog mProgresDiaolog;
     public static final int PICK_IMAGE = 1;
+    private Button chatButton;
     private Uri mImageProfileUri;
     private String currentUserID;
     private ArrayList<String> friendsIdList;
@@ -239,6 +241,14 @@ public class ProfilActivity extends AppCompatActivity {
             public boolean onLongClick(View view) {
                 openFileChooser(userID);
                 return false;
+            }
+        });
+
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilActivity.this,Chat.class);
+                startActivity(intent);
             }
         });
 
@@ -646,6 +656,7 @@ public class ProfilActivity extends AppCompatActivity {
         password = (Button) findViewById(R.id.changePassword);
         goToFriends = (Button) findViewById(R.id.go_to_friends_btn);
         inviteUserToFriends = (Button) findViewById(R.id.invite_user_to_friends_btn);
+        chatButton = findViewById(R.id.chat_button);
 
     }
 

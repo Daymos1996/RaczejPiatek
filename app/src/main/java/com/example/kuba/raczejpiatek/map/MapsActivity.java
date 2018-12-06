@@ -74,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements
         userIdString = user.getUid();
 
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
+     //   Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkUserLocationPermission();
@@ -160,6 +161,8 @@ public class MapsActivity extends FragmentActivity implements
 
         for(int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
             setLocationFriendsInMap(friendsIdFromDatabaseArrayList.get(i));
+            Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
+
         }
 
 

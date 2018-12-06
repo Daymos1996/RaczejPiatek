@@ -104,6 +104,7 @@ public class searchFriendsActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(ViewHolder holder, final int position, FindFriends model) {
                 final String key = getRef(position).getKey();
+
                 holder.setFullname(model.getFirst_name());
                 holder.setProfileimage(getApplicationContext(), model.getProfilURl());
                 holder.mView.setOnClickListener(new View.OnClickListener() {

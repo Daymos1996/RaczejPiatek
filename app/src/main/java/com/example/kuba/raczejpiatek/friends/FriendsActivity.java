@@ -51,6 +51,7 @@ public class FriendsActivity extends AppCompatActivity {
         friendsIdList = (ArrayList<String>) getIntent().getSerializableExtra("FRIEND_ID_LIST");
 
         userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
         friendsRecyclerViewAdapter = new FriendsRecyclerViewAdapter(FriendsActivity.this, userDatabaseRef,friendsIdList);
         friendsListRecyclerView.setLayoutManager( new LinearLayoutManager(this));
         friendsListRecyclerView.setHasFixedSize(true);

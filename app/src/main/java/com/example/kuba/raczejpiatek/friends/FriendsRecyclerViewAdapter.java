@@ -36,7 +36,6 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println("Got snapshot with " + dataSnapshot.getChildrenCount() + " children");
                 friendsList.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     for (int i = 0; i < friendsIdList.size(); i++) {

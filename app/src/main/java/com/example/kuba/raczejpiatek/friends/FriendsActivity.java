@@ -65,4 +65,15 @@ public class FriendsActivity extends AppCompatActivity {
         friendsListRecyclerView = (RecyclerView) findViewById(R.id.friendsListRecyclerView);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        friendsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        friendsRecyclerViewAdapter.notifyDataSetChanged();
+    }
 }

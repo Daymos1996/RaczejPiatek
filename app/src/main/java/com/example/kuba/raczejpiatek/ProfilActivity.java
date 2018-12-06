@@ -100,6 +100,7 @@ public class ProfilActivity extends AppCompatActivity {
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
+            goToFriends.setVisibility(View.GONE);
             inviteUserToFriends.setVisibility(View.VISIBLE);
 
             inviteUserToFriends.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +114,7 @@ public class ProfilActivity extends AppCompatActivity {
 
         } else {
             userID = user.getUid();
-            ggg();
+            friendsIdFromDatabase();
         }
 
 
@@ -616,7 +617,7 @@ public class ProfilActivity extends AppCompatActivity {
         }
     }
 
-    private void ggg() {
+    private void friendsIdFromDatabase() {
         DatabaseReference allUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users/" + userID + "/friends");
         allUserDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

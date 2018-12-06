@@ -52,7 +52,7 @@ public class searchFriendsActivity extends AppCompatActivity {
         allUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         String searchText = editTextSearch.getText().toString();
-        fetch(searchText);
+        searchFriends(searchText);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,11 +60,8 @@ public class searchFriendsActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -77,7 +74,8 @@ public class searchFriendsActivity extends AppCompatActivity {
         super.onStop();
         adapter.stopListening();
     }
-    private void fetch(String searchText) {
+
+    private void searchFriends(String searchText) {
         Query query = allUserDatabaseRef.orderByChild("first_name").startAt(searchText).endAt(searchText + "\uf8ff");
 
         FirebaseRecyclerOptions<FindFriends> options =
@@ -136,13 +134,10 @@ public class searchFriendsActivity extends AppCompatActivity {
         }
 
         public void setProfileimage(Context ctx, String profileimage) {
-
-            //  ImageView myImage = mView.findViewById(R.id.profileFriendPhoto);
             Picasso.with(ctx).load(profileimage).placeholder(R.drawable.com_facebook_profile_picture_blank_portrait).into(myImage);
         }
 
         public void setFullname(String fullname) {
-            //   TextView myName = mView.findViewById(R.id.txtFriendName);
             myName.setText(fullname);
         }
     }

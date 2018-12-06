@@ -83,7 +83,6 @@ public class ProfilActivity extends AppCompatActivity {
         friendsIdList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
         final FirebaseUser user = mAuth.getCurrentUser();
         if (!(user.getUid().isEmpty())) {
             userID = user.getUid();
@@ -134,6 +133,8 @@ public class ProfilActivity extends AppCompatActivity {
 
         };
 
+
+        myRef = FirebaseDatabase.getInstance().getReference().child("Users/" + userID);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -243,64 +244,69 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
 
-
     }
 
-    private void showData(DataSnapshot dataSnapshot) {
+    private void showData(DataSnapshot ds) {
+        User uInfo = new User();
+        if (ds.child("first_name").exists()) {
+            uInfo.setFirst_name(ds.child("first_name").getValue().toString());
+        }
+        if (ds.child("last_name").exists()) {
+            uInfo.setLast_name(ds.child("last_name").getValue().toString()); //set the name
+        }
+        if (ds.child("email").exists()) {
+            uInfo.setEmail(ds.child("email").getValue().toString()); //set the email
+        }
+
+        if (ds.child("profilURl").exists()) {
+            uInfo.setProfilURl(ds.child("profilURl").getValue().toString());
+        }
+        if (ds.child("username").exists()) {
+            uInfo.setUsername(ds.child("username").getValue().toString());
+        }
+        if (ds.child("phone").exists()) {
+            uInfo.setPhone(ds.child("phone").getValue().toString());
+        }
+
+        //display all the information
+        Log.d(TAG, "showData: name: " + uInfo.getFirst_name());
+        Log.d(TAG, "showData: name: " + uInfo.getLast_name());
+        Log.d(TAG, "showData: email: " + uInfo.getEmail());
+        Log.d(TAG, "showData: phone_num: " + uInfo.getPhone());
+        Log.d(TAG, "showData: profile: " + uInfo.getProfilURl());
 
 
-        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-            User uInfo = new User();
-            uInfo.setFirst_name(ds.child(userID).getValue(User.class).getFirst_name()); //set the name
-            uInfo.setLast_name(ds.child(userID).getValue(User.class).getLast_name()); //set the name
-            uInfo.setEmail(ds.child(userID).getValue(User.class).getEmail()); //set the email
-            uInfo.setGender(ds.child(userID).getValue(User.class).getGender());
-            uInfo.setProfilURl(ds.child(userID).getValue(User.class).getProfilURl());
-            uInfo.setUsername(ds.child(userID).getValue(User.class).getUsername());
-            uInfo.setPhone(ds.child(userID).getValue(User.class).getPhone());
-
-
-            //display all the information
-            Log.d(TAG, "showData: name: " + uInfo.getFirst_name());
-            Log.d(TAG, "showData: name: " + uInfo.getLast_name());
-            Log.d(TAG, "showData: email: " + uInfo.getEmail());
-            Log.d(TAG, "showData: phone_num: " + uInfo.getPhone());
-            Log.d(TAG, "showData: profile: " + uInfo.getProfilURl());
-
-
-            emailTextView.setText(uInfo.getEmail());
-            if (uInfo.getGender() == null) {
-                genderTextView.setText("Nie podano płci");
-            } else {
-                genderTextView.setText(uInfo.getGender());
-            }
-            if (uInfo.getFirst_name() == null) {
-                first_nameTextView.setText("Nie podano imienia");
-            } else {
-                first_nameTextView.setText(uInfo.getFirst_name());
-            }
-            if (uInfo.getLast_name() == null) {
-                last_nameTextView.setText("Nie podano nazwiska");
-            } else {
-                last_nameTextView.setText(uInfo.getLast_name());
-            }
-            if (uInfo.getUsername() == null) {
-                nickNameTextView.setText("Nie podano nicku");
-            } else {
-                nickNameTextView.setText(uInfo.getUsername());
-            }
-            if (uInfo.getPhone() == null) {
-                phoneNumberTextView.setText("Nie podano numeru");
-            } else {
-                phoneNumberTextView.setText(uInfo.getPhone());
-            }
-            if (uInfo.getProfilURl() != null) {
-                Picasso.with(this).load(uInfo.getProfilURl()).into(profilURL);
-
-            }
+        emailTextView.setText(uInfo.getEmail());
+        if (uInfo.getGender() == null) {
+            genderTextView.setText("Nie podano płci");
+        } else {
+            genderTextView.setText(uInfo.getGender());
+        }
+        if (uInfo.getFirst_name() == null) {
+            first_nameTextView.setText("Nie podano imienia");
+        } else {
+            first_nameTextView.setText(uInfo.getFirst_name());
+        }
+        if (uInfo.getLast_name() == null) {
+            last_nameTextView.setText("Nie podano nazwiska");
+        } else {
+            last_nameTextView.setText(uInfo.getLast_name());
+        }
+        if (uInfo.getUsername() == null) {
+            nickNameTextView.setText("Nie podano nicku");
+        } else {
+            nickNameTextView.setText(uInfo.getUsername());
+        }
+        if (uInfo.getPhone() == null) {
+            phoneNumberTextView.setText("Nie podano numeru");
+        } else {
+            phoneNumberTextView.setText(uInfo.getPhone());
+        }
+        if (uInfo.getProfilURl() != null) {
+            Picasso.with(this).load(uInfo.getProfilURl()).into(profilURL);
 
         }
+
     }
 
     public void deleteUser(String userID) {

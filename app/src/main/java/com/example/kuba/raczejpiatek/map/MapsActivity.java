@@ -1,7 +1,11 @@
 package com.example.kuba.raczejpiatek.map;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -13,7 +17,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.MyCallback;
+import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
 import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.common.ConnectionResult;
@@ -26,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -61,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements
     private static final int Request_User_Location_Code = 99;
     private double latitide, longitude;
     private double[] latLngDouble = new double[2];
+    private FindFriends friend = new FindFriends();
     private String userIdString;
     private ArrayList<String> friendsIdFromDatabaseArrayList;
 
@@ -74,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements
         userIdString = user.getUid();
 
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
-     //   Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
+        //   Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkUserLocationPermission();
@@ -149,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements
 
         lastLocation = location;
 
-        Toast.makeText(this, latitide + " , " + longitude, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, latitide + " , " + longitude, Toast.LENGTH_SHORT).show();
 
         if (currentUserLocationMarker != null) {
             currentUserLocationMarker.remove();
@@ -159,9 +167,9 @@ public class MapsActivity extends FragmentActivity implements
 
         shareLocation();
 
-        for(int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
+        for (int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
             setLocationFriendsInMap(friendsIdFromDatabaseArrayList.get(i));
-            Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -242,7 +250,7 @@ public class MapsActivity extends FragmentActivity implements
         friendsReferences.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String id = ds.getKey();
                     usersIdArrayList.add(id);
                 }
@@ -255,21 +263,32 @@ public class MapsActivity extends FragmentActivity implements
         });
         return usersIdArrayList;
     }
+
     private void setLocationFriendsInMap(String userID) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         friendsReferences = database.getReference().child("Users/" + userID);
         latLngDouble = new double[2];
+        FindFriends friend = new FindFriends();
 
         readData(new FirebaseCallback() {
             @Override
-            public void onCallback(double[] d) {
+            public void onCallback(double[] d, final FindFriends friend) {
                 if (d.length > 1) {
                     LatLng latLng = new LatLng(d[0], d[1]);
                     MarkerOptions markerOptionsOtherUser = new MarkerOptions();
                     markerOptionsOtherUser.position(latLng);
-                    markerOptionsOtherUser.title("Pozycja znajomego");
-                    markerOptionsOtherUser.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    markerOptionsOtherUser.title(friend.getFirst_name());
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.blank_avatar_s);
+                    markerOptionsOtherUser.icon(icon);
                     currentUserLocationMarker = mMap.addMarker(markerOptionsOtherUser);
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            showActionsDialog(friend);
+                            return false;
+                        }
+
+                    });
                 }
 
             }
@@ -281,14 +300,20 @@ public class MapsActivity extends FragmentActivity implements
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String lat,lng;
+                String lat, lng, name, photo, id;
                 if (dataSnapshot.child("lat").exists() && dataSnapshot.child("lng").exists()) {
                     lat = dataSnapshot.child("lat").getValue(String.class);
                     lng = dataSnapshot.child("lng").getValue(String.class);
                     latLngDouble[0] = Double.parseDouble(lat);
                     latLngDouble[1] = Double.parseDouble(lng);
 
-                    firebaseCallback.onCallback(latLngDouble);
+                    id = dataSnapshot.getKey();
+                    name = dataSnapshot.child("first_name").getValue(String.class);
+                    photo = dataSnapshot.child("profilURl").getValue(String.class);
+                    friend.setFirst_name(name);
+                    friend.setProfilURl(photo);
+                    friend.setId(id);
+                    firebaseCallback.onCallback(latLngDouble, friend);
                 }
 
             }
@@ -302,7 +327,36 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private interface FirebaseCallback {
-        void onCallback(double[] d);
+        void onCallback(double[] d, FindFriends friend);
     }
 
+    private void showActionsDialog(final FindFriends friend) {
+        CharSequence colors[] = new CharSequence[]{"Wyświetl profil", "Rozpocznij czat"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    showProfil(friend);
+                } else {
+                    showChat();
+
+                }
+            }
+        });
+        builder.show();
+    }
+
+
+    private void showProfil(FindFriends friend) {
+        String key = friend.getId();
+        Intent intent = new Intent(MapsActivity.this, ProfilActivity.class);
+        intent.putExtra("key", key);
+        startActivity(intent);
+    }
+
+    private void showChat() {
+
+    }
 }

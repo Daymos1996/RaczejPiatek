@@ -57,6 +57,7 @@ public class FriendsActivity extends AppCompatActivity {
         friendsListRecyclerView.setHasFixedSize(true);
         friendsListRecyclerView.setAdapter(friendsRecyclerViewAdapter);
         friendsRecyclerViewAdapter.notifyDataSetChanged();
+
     }
 
 
@@ -76,4 +77,11 @@ public class FriendsActivity extends AppCompatActivity {
         super.onResume();
         friendsRecyclerViewAdapter.notifyDataSetChanged();
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        friendsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+
 }

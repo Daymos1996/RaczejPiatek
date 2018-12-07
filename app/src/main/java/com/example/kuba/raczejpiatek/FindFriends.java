@@ -1,13 +1,20 @@
 package com.example.kuba.raczejpiatek;
 
 public class FindFriends {
-    public String profilURl, first_name, last_name=" ";
+    public String profilURl, first_name, id;
 
-    public FindFriends(String profilURl, String first_name, String last_name) {
-        this.last_name = last_name;
+
+    public FindFriends(String profilURl, String first_name) {
         this.profilURl = profilURl;
         this.first_name = first_name;
     }
+
+    public FindFriends(String profilURl, String first_name,String id) {
+        this.profilURl = profilURl;
+        this.first_name = first_name;
+        this.id = id;
+    }
+
 
     public FindFriends(){
 
@@ -22,10 +29,18 @@ public class FindFriends {
     }
 
     public String getFirst_name() {
-        return first_name + " " + last_name;
+        return first_name;
     }
 
     public void setFirst_name(String first_name) {
         this.first_name = first_name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

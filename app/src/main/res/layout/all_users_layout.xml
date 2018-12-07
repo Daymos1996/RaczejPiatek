@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_margin="5dp"
-    android:layout_height="60dp">
+    android:layout_height="60dp"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/profileFriendPhoto"
@@ -12,10 +13,32 @@
         android:src="@drawable/com_facebook_profile_picture_blank_portrait"/>
     <TextView
         android:id="@+id/txtFriendName"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:textStyle="bold"
         android:textSize="30dp"
         android:text="imie i nazwisko"
         android:gravity="center"
         android:layout_height="60dp" />
+
+        <Button
+            android:id="@+id/accept"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="invisible"
+            android:text="Akceptuj" />
+
+
+        <Button
+            android:id="@+id/decline"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="invisible"
+            android:text="Odrzuc"
+            />
+
+
+
+
 </LinearLayout>

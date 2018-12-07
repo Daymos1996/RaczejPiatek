@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/layout_background"
+    android:layout_gravity="center"
     tools:context=".ProfilActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
@@ -18,24 +20,40 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/blank_avatar" />
+            android:src="@drawable/add_image" />
 
         <TextView
             android:id="@+id/txtFirstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF335F"
+            android:textSize="15dp"
+            android:layout_marginTop="2dp"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
         <TextView
             android:id="@+id/txtLastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF335F"
+            android:textSize="15dp"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
         <TextView
             android:id="@+id/txtUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF335F"
+            android:textSize="15dp"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
 
@@ -43,18 +61,33 @@
             android:id="@+id/txtEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF335F"
+            android:textSize="15dp"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
         <TextView
             android:id="@+id/txtGender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF335F"
+            android:textSize="15dp"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
         <TextView
             android:id="@+id/txtPhoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF335F"
+            android:textSize="15dp"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
 
@@ -64,42 +97,92 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:visibility="gone"
-            android:text="Zaproś do znajomych" />
+            android:text="Add Friend"
+            android:background="@drawable/button_background"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            />
 
         <Button
             android:id="@+id/go_to_map_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Mapa" />
+            android:background="@drawable/button_for_profil"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:text="Map" />
 
         <Button
             android:id="@+id/go_to_find_friends_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_for_profil"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
             android:text="Find Friends" />
+
+        <Button
+            android:id="@+id/go_to_friends_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_for_profil"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:text="Friends" />
 
         <Button
             android:id="@+id/deleteUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Usuń konto" />
+            android:background="@drawable/button_for_profil"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:text="Delete Account" />
 
         <Button
             android:id="@+id/changePassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Zmien haslo" />
+            android:background="@drawable/button_for_profil"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:text="Change Password" />
+
         <Button
-            android:id="@+id/inviteFriend"
+            android:id="@+id/inviteFriends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Zaproszenia" />
-
+            android:background="@drawable/button_for_profil"
+            android:textSize="20dp"
+            android:textColor="#2A3c58"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:text="zaproszenia" />
     </LinearLayout>
 
 

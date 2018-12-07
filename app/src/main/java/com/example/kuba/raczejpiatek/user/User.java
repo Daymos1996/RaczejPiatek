@@ -15,6 +15,7 @@ public class User {
     private String lng;
 
     public User(){
+
     }
 
 
@@ -25,6 +26,15 @@ public class User {
         this.phone = phone;
     }
 
+
+    public User(String username, String email, String password, String phone, String first_name, String profilURl) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.first_name = first_name;
+        this.profilURl = profilURl;
+    }
     public User(String email, String gender, String profilURl, String first_name, String last_name) {
         this.email = email;
         this.gender = gender;
@@ -32,6 +42,8 @@ public class User {
         this.first_name = first_name;
         this.last_name = last_name;
     }
+
+
     public User(String lat, String lng) {
         this.lat = lat;
         this.lng = lng;

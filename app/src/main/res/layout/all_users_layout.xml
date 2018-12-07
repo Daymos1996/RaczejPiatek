@@ -13,7 +13,7 @@
         android:src="@drawable/com_facebook_profile_picture_blank_portrait"/>
     <TextView
         android:id="@+id/txtFriendName"
-        android:layout_width="100dp"
+        android:layout_width="210dp"
         android:textStyle="bold"
         android:textSize="30dp"
         android:text="imie i nazwisko"
@@ -22,20 +22,20 @@
 
         <Button
             android:id="@+id/accept"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:visibility="invisible"
-            android:text="Akceptuj" />
+            android:text="+"/>
 
 
         <Button
             android:id="@+id/decline"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:visibility="invisible"
-            android:text="Odrzuc"
+            android:text="-"
             />
 
 

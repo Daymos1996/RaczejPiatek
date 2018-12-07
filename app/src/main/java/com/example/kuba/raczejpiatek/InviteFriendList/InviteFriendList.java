@@ -39,7 +39,7 @@ public class InviteFriendList extends AppCompatActivity {
 
         userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        inviteFriendListRecyclerViewArapter = new InviteFriendListRecyclerViewArapter(InviteFriendList.this, userDatabaseRef,InvitefriendsIdList);
+        inviteFriendListRecyclerViewArapter = new InviteFriendListRecyclerViewArapter(InviteFriendList.this, userDatabaseRef,InvitefriendsIdList,userID);
         friendsListRecyclerView.setLayoutManager( new LinearLayoutManager(InviteFriendList.this));
         friendsListRecyclerView.setHasFixedSize(true);
         friendsListRecyclerView.setAdapter(inviteFriendListRecyclerViewArapter);

@@ -79,12 +79,12 @@
         />
 
     <Button
-        android:id="@+id/buttonFacebookSignout"
+        android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Wyloguj sie"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/textViewRegister"

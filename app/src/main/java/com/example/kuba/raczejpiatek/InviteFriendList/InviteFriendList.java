@@ -47,17 +47,6 @@ public class InviteFriendList extends AppCompatActivity {
 
         }
 
-
-
-        /*
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AcceptFriendRequest();
-            }
-        });
-        */
-
     }
 
     @Override
@@ -69,12 +58,12 @@ public class InviteFriendList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //inviteFriendListRecyclerViewArapter.notifyDataSetChanged();
+ //       inviteFriendListRecyclerViewArapter.notifyDataSetChanged();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-      //  inviteFriendListRecyclerViewArapter.notifyDataSetChanged();
+ //       inviteFriendListRecyclerViewArapter.notifyDataSetChanged();
     }
 
 

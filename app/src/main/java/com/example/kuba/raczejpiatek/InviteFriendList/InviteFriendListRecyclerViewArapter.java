@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,14 +28,14 @@ public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<In
     private List<FindFriends> InvitefriendsList = new ArrayList<>();
     private Context mContext;
     private DatabaseReference mRef;
-    private Button acceptButton;
-    private Button decelineButton;
-    private String userIDD;
+    private ImageButton acceptButton;
+    private ImageButton decelineButton;
+    private String userID;
 
-    public InviteFriendListRecyclerViewArapter(Context mContext, DatabaseReference ref, final ArrayList<String> InvitefriendsIdList, String userID) {
+    public InviteFriendListRecyclerViewArapter(Context mContext, DatabaseReference ref, final ArrayList<String> InvitefriendsIdList, final String userID) {
         this.mContext = mContext;
         this.mRef = ref;
-        userIDD=userID;
+        this.userID=userID;
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -71,8 +71,8 @@ public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<In
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         view = mInflater.inflate(R.layout.all_users_layout, viewGroup, false);
-        acceptButton = (Button) view.findViewById(R.id.accept);
-        decelineButton = (Button) view.findViewById(R.id.decline);
+        acceptButton = (ImageButton) view.findViewById(R.id.accept);
+        decelineButton = (ImageButton) view.findViewById(R.id.decline);
         acceptButton.setVisibility(View.VISIBLE);
         decelineButton.setVisibility(View.VISIBLE);
         return new ItemViewHolder(view);
@@ -96,7 +96,17 @@ public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<In
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mRef.child(userID).child("friends").child(InvitefriendsList.get(i).getId()).setValue("accept");
+                mRef.child(InvitefriendsList.get(i).getId()).child("friends").child(userID).setValue("accept");
+                InvitefriendsList.remove(i);
+            }
+        });
+        decelineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRef.child(userID).child("friends").child(InvitefriendsList.get(i).getId()).removeValue();
+                mRef.child(InvitefriendsList.get(i).getId()).child("friends").child(userID).removeValue();
+                InvitefriendsList.remove(i);
             }
         });
     }

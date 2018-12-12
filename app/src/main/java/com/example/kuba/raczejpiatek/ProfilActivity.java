@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -69,6 +70,7 @@ public class ProfilActivity extends AppCompatActivity {
     private Button inviteFriends;
     private Button inviteUserToFriends;
     private Button goToFriends;
+    private Button goToChat;
     private String userID;
     private ProgressDialog mProgresDiaolog;
     public static final int PICK_IMAGE = 1;
@@ -97,15 +99,14 @@ public class ProfilActivity extends AppCompatActivity {
 
 
         if (getIntent().hasExtra("key")) {
-            userID = getIntent().getStringExtra("key");
-
-            currentUserID = user.getUid();
+            currentUserID = getIntent().getStringExtra("key");
             goToMapBtn.setVisibility(View.GONE);
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
             goToFriends.setVisibility(View.GONE);
             inviteUserToFriends.setVisibility(View.VISIBLE);
+            inviteFriends.setVisibility(View.GONE);
 
             inviteUserToFriends.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,9 +115,24 @@ public class ProfilActivity extends AppCompatActivity {
                     inviteUserToFriends.setText("Zaproszenie wysłane");
                 }
             });
+            userID = getIntent().getStringExtra("key");
+
+        }
+        else if(getIntent().hasExtra(MapsActivity.KEY_MAPS)) {
+            //userID = user.getUid();
+            userID = getIntent().getStringExtra(MapsActivity.KEY_MAPS);
+            goToMapBtn.setVisibility(View.GONE);
+            password.setVisibility(View.GONE);
+            deleteUser.setVisibility(View.GONE);
+            goToFindFriendsBtn.setVisibility(View.GONE);
+            goToFriends.setVisibility(View.GONE);
+            inviteUserToFriends.setVisibility(View.GONE);
+            inviteFriends.setVisibility(View.GONE);
+            goToChat.setVisibility(View.VISIBLE);
 
 
-        } else {
+        }
+        else {
             userID = user.getUid();
             friendsIdFromDatabase();
         }
@@ -634,7 +650,10 @@ public class ProfilActivity extends AppCompatActivity {
 
     private void setFriendsListFromFriendsTable(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-            friendsIdList.add(ds.getKey());
+            if (ds.getValue().equals("accept")) {
+                friendsIdList.add(ds.getKey());
+              //  Toast.makeText(ProfilActivity.this, String.valueOf(friendsIdList.size()), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -677,6 +696,7 @@ public class ProfilActivity extends AppCompatActivity {
         goToFriends = (Button) findViewById(R.id.go_to_friends_btn);
         inviteUserToFriends = (Button) findViewById(R.id.invite_user_to_friends_btn);
         inviteFriends= (Button) findViewById(R.id.inviteFriends);
+        goToChat = (Button) findViewById(R.id.chatToFriend);
 
     }
 

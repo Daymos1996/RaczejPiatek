@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kuba.raczejpiatek.BubbleTransformation;
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.MyCallback;
 import com.example.kuba.raczejpiatek.ProfilActivity;
@@ -47,6 +50,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.core.Tag;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
@@ -66,11 +71,14 @@ public class MapsActivity extends FragmentActivity implements
     private Location lastLocation;
     private Marker currentUserLocationMarker;
     private static final int Request_User_Location_Code = 99;
+    public static final String KEY_MAPS = "KEY_MAPS";
     private double latitide, longitude;
     private double[] latLngDouble = new double[2];
     private FindFriends friend = new FindFriends();
     private String userIdString;
     private ArrayList<String> friendsIdFromDatabaseArrayList;
+    private String userId;
+    private Target mTarget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +90,7 @@ public class MapsActivity extends FragmentActivity implements
         userIdString = user.getUid();
 
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
-        //   Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkUserLocationPermission();
@@ -157,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements
 
         lastLocation = location;
 
-      //  Toast.makeText(this, latitide + " , " + longitude, Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(this, latitide + " , " + longitude, Toast.LENGTH_SHORT).show();
 
         if (currentUserLocationMarker != null) {
             currentUserLocationMarker.remove();
@@ -169,7 +177,7 @@ public class MapsActivity extends FragmentActivity implements
 
         for (int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
             setLocationFriendsInMap(friendsIdFromDatabaseArrayList.get(i));
-         //   Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(0) + " dfdfd fdsf", Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(i), Toast.LENGTH_SHORT).show();
 
         }
 
@@ -251,8 +259,10 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String id = ds.getKey();
-                    usersIdArrayList.add(id);
+                    if (ds.getValue().equals("accept")) {
+                        String id = ds.getKey();
+                        usersIdArrayList.add(id);
+                    }
                 }
             }
 
@@ -268,27 +278,32 @@ public class MapsActivity extends FragmentActivity implements
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         friendsReferences = database.getReference().child("Users/" + userID);
         latLngDouble = new double[2];
-        FindFriends friend = new FindFriends();
-
+        friend = new FindFriends();
+        userId = userID;
         readData(new FirebaseCallback() {
             @Override
-            public void onCallback(double[] d, final FindFriends friend) {
+            public void onCallback(double[] d, final FindFriends f) {
                 if (d.length > 1) {
-                    LatLng latLng = new LatLng(d[0], d[1]);
-                    MarkerOptions markerOptionsOtherUser = new MarkerOptions();
-                    markerOptionsOtherUser.position(latLng);
-                    markerOptionsOtherUser.title(friend.getFirst_name());
-                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.blank_avatar_s);
-                    markerOptionsOtherUser.icon(icon);
-                    currentUserLocationMarker = mMap.addMarker(markerOptionsOtherUser);
+                    final LatLng latLng = new LatLng(d[0], d[1]);
+                    //     MarkerOptions markerOptionsOtherUser = new MarkerOptions();
+                    //     markerOptionsOtherUser.position(latLng);
+                    //     markerOptionsOtherUser.title(f.getFirst_name());
+                    //   BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.blank_avatar_s);
+                    //   markerOptionsOtherUser.icon(icon);
+                    //   currentUserLocationMarker = mMap.addMarker(markerOptionsOtherUser);
+
+                    setTargetOnImage(latLng,f);
+                    setImageIconOnMarkerUsingPicasso(f);
+
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            showActionsDialog(friend);
+                            showActionsDialog(f.getId());
                             return false;
                         }
 
                     });
+
                 }
 
             }
@@ -300,19 +315,9 @@ public class MapsActivity extends FragmentActivity implements
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String lat, lng, name, photo, id;
                 if (dataSnapshot.child("lat").exists() && dataSnapshot.child("lng").exists()) {
-                    lat = dataSnapshot.child("lat").getValue(String.class);
-                    lng = dataSnapshot.child("lng").getValue(String.class);
-                    latLngDouble[0] = Double.parseDouble(lat);
-                    latLngDouble[1] = Double.parseDouble(lng);
-
-                    id = dataSnapshot.getKey();
-                    name = dataSnapshot.child("first_name").getValue(String.class);
-                    photo = dataSnapshot.child("profilURl").getValue(String.class);
-                    friend.setFirst_name(name);
-                    friend.setProfilURl(photo);
-                    friend.setId(id);
+                    setLatAndLngToDoubleTable(dataSnapshot);
+                    setFriendData(dataSnapshot);
                     firebaseCallback.onCallback(latLngDouble, friend);
                 }
 
@@ -326,19 +331,69 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
+    private void setLatAndLngToDoubleTable(DataSnapshot dataSnapshot) {
+        String lat = dataSnapshot.child("lat").getValue(String.class);
+        String lng = dataSnapshot.child("lng").getValue(String.class);
+        latLngDouble[0] = Double.parseDouble(lat);
+        latLngDouble[1] = Double.parseDouble(lng);
+    }
+
+    private void setFriendData(DataSnapshot dataSnapshot) {
+        String id = dataSnapshot.getKey();
+        String name = dataSnapshot.child("first_name").getValue(String.class);
+        String photo = dataSnapshot.child("profilURl").getValue(String.class);
+        friend.setFirst_name(name);
+        friend.setProfilURl(photo);
+        friend.setId(id);
+        //Toast.makeText(MapsActivity.this, friend.getId(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void setImageIconOnMarkerUsingPicasso(FindFriends f) {
+        Picasso.with(MapsActivity.this)
+                .load(f.getProfilURl())
+                .resize(250, 250)
+                .centerCrop()
+                .transform(new BubbleTransformation(10))
+                .into(mTarget);
+    }
+
+    private void setTargetOnImage(final LatLng latLng, final FindFriends f) {
+        mTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                currentUserLocationMarker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                        .title(f.getFirst_name())
+                        .snippet("test address")
+                );
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+                Log.d("picasso", "onBitmapFailed");
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+    }
+
     private interface FirebaseCallback {
         void onCallback(double[] d, FindFriends friend);
     }
 
-    private void showActionsDialog(final FindFriends friend) {
+    private void showActionsDialog(final String id) {
         CharSequence colors[] = new CharSequence[]{"Wyświetl profil", "Rozpocznij czat"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         builder.setItems(colors, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-                    showProfil(friend);
+                    showProfil(id);
                 } else {
                     showChat();
 
@@ -349,10 +404,10 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    private void showProfil(FindFriends friend) {
-        String key = friend.getId();
+    private void showProfil(String id) {
+        String key = id;
         Intent intent = new Intent(MapsActivity.this, ProfilActivity.class);
-        intent.putExtra("key", key);
+        intent.putExtra(KEY_MAPS, key);
         startActivity(intent);
     }
 

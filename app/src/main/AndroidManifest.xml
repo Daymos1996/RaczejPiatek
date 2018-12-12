@@ -68,8 +68,9 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".addFriends.addFriend" />
         <activity android:name=".searchfriends.searchFriendsActivity" />
-        <activity android:name=".friends.FriendsActivity"></activity>
-        <activity android:name=".InviteFriendList.InviteFriendList"></activity>
+        <activity android:name=".friends.FriendsActivity" />
+        <activity android:name=".InviteFriendList.InviteFriendList" />
+        <activity android:name=".chat.Chat"></activity>
     </application>
 
 </manifest>

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.chat.Chat;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -80,6 +81,16 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
                 Intent intent = new Intent(mContext, ProfilActivity.class);
                 intent.putExtra("key", key);
                 mContext.startActivity(intent);
+            }
+        });
+        itemViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String key = friendsList.get(i).getId();
+                Intent intent = new Intent(mContext, Chat.class);
+                intent.putExtra("key", key);
+                mContext.startActivity(intent);
+                return true;
             }
         });
     }

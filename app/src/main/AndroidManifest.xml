@@ -70,7 +70,7 @@
         <activity android:name=".searchfriends.searchFriendsActivity" />
         <activity android:name=".friends.FriendsActivity" />
         <activity android:name=".InviteFriendList.InviteFriendList" />
-        <activity android:name=".chat.Chat"></activity>
+        <activity android:name=".chat.Chat" />
     </application>
 
 </manifest>

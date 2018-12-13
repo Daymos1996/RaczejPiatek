@@ -5,12 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -168,14 +171,6 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
 
-        goToMapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfilActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
-
         goToFindFriendsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,6 +268,33 @@ public class ProfilActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setChecked(true);
+
+        BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+                = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        break;
+                    case R.id.navigation_dashboard:
+                        Intent p = new Intent(ProfilActivity.this, MapsActivity.class);
+                        startActivity(p);
+                        return true;
+                    case R.id.navigation_notifications:
+                        Toast.makeText(ProfilActivity.this, "może chat", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return false;
+            }
+        };
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
     }
@@ -689,7 +711,6 @@ public class ProfilActivity extends AppCompatActivity {
         phoneNumberTextView = findViewById(R.id.txtPhoneNumber);
         genderTextView = findViewById(R.id.txtGender);
         profilURL = findViewById(R.id.avatar);
-        goToMapBtn = (Button) findViewById(R.id.go_to_map_btn);
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser = (Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);

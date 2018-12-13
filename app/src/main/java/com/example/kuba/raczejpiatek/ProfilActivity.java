@@ -102,8 +102,9 @@ public class ProfilActivity extends AppCompatActivity {
 
 
         if (getIntent().hasExtra("key")) {
-            currentUserID = getIntent().getStringExtra("key");
-            goToMapBtn.setVisibility(View.GONE);
+            userID = getIntent().getStringExtra("key");
+
+            currentUserID = user.getUid();
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
@@ -118,13 +119,10 @@ public class ProfilActivity extends AppCompatActivity {
                     inviteUserToFriends.setText("Zaproszenie wysłane");
                 }
             });
-            userID = getIntent().getStringExtra("key");
 
         }
         else if(getIntent().hasExtra(MapsActivity.KEY_MAPS)) {
-            //userID = user.getUid();
             userID = getIntent().getStringExtra(MapsActivity.KEY_MAPS);
-            goToMapBtn.setVisibility(View.GONE);
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -285,14 +286,7 @@ public class MapsActivity extends FragmentActivity implements
             public void onCallback(double[] d, final FindFriends f) {
                 if (d.length > 1) {
                     final LatLng latLng = new LatLng(d[0], d[1]);
-                    //     MarkerOptions markerOptionsOtherUser = new MarkerOptions();
-                    //     markerOptionsOtherUser.position(latLng);
-                    //     markerOptionsOtherUser.title(f.getFirst_name());
-                    //   BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.blank_avatar_s);
-                    //   markerOptionsOtherUser.icon(icon);
-                    //   currentUserLocationMarker = mMap.addMarker(markerOptionsOtherUser);
-
-                    setTargetOnImage(latLng,f);
+                    setTargetOnImage(latLng, f);
                     setImageIconOnMarkerUsingPicasso(f);
 
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -342,19 +336,29 @@ public class MapsActivity extends FragmentActivity implements
         String id = dataSnapshot.getKey();
         String name = dataSnapshot.child("first_name").getValue(String.class);
         String photo = dataSnapshot.child("profilURl").getValue(String.class);
+        String sharing = dataSnapshot.child("is_sharing").getValue(String.class);
+        boolean sharingB = Boolean.parseBoolean(sharing);
         friend.setFirst_name(name);
         friend.setProfilURl(photo);
         friend.setId(id);
-        //Toast.makeText(MapsActivity.this, friend.getId(), Toast.LENGTH_SHORT).show();
+        friend.setIs_sharing(sharingB);
     }
 
     private void setImageIconOnMarkerUsingPicasso(FindFriends f) {
+        int color;
+     //   Toast.makeText(MapsActivity.this, String.valueOf(f.isIs_sharing()), Toast.LENGTH_SHORT).show();
+        if (f.isIs_sharing()) {
+            color = Color.GREEN;
+        } else {
+            color = Color.RED;
+        }
         Picasso.with(MapsActivity.this)
                 .load(f.getProfilURl())
                 .resize(250, 250)
                 .centerCrop()
-                .transform(new BubbleTransformation(10))
+                .transform(new BubbleTransformation(10, color))
                 .into(mTarget);
+
     }
 
     private void setTargetOnImage(final LatLng latLng, final FindFriends f) {

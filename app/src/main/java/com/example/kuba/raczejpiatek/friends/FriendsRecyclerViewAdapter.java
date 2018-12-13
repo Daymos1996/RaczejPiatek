@@ -110,13 +110,5 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
             myImage = itemView.findViewById(R.id.profileFriendPhoto);
         }
 
-        public TextView getMyName() {
-            return myName;
-        }
-
-        public ImageView getMyImage() {
-            return myImage;
-        }
-
     }
 }

@@ -12,9 +12,11 @@ import android.graphics.Shader;
 public class BubbleTransformation implements com.squareup.picasso.Transformation {
     private static final int outerMargin = 40;
     private final int margin;
+    int color;
 
-    public BubbleTransformation(final int margin) {
+    public BubbleTransformation(final int margin, int color) {
         this.margin = margin;
+        this.color = color;
     }
 
     @Override
@@ -23,14 +25,14 @@ public class BubbleTransformation implements com.squareup.picasso.Transformation
         Canvas canvas = new Canvas(output);
 
         Paint paintBorder = new Paint();
-        paintBorder.setColor(Color.CYAN);
+        paintBorder.setColor(color);
         paintBorder.setStrokeWidth(margin);
         canvas.drawRoundRect(new RectF(outerMargin, outerMargin, source.getWidth() - outerMargin, source.getHeight() - outerMargin), 0, 0, paintBorder);
 
         Paint trianglePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         trianglePaint.setStrokeWidth(2);
-        trianglePaint.setColor(Color.CYAN);
+        trianglePaint.setColor(color);
         trianglePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         trianglePaint.setAntiAlias(true);
 

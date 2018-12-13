@@ -1,7 +1,8 @@
 package com.example.kuba.raczejpiatek;
 
 public class FindFriends {
-    public String profilURl, first_name, id;
+    private String profilURl, first_name, id;
+    private boolean is_sharing;
 
 
     public FindFriends(String profilURl, String first_name) {
@@ -42,5 +43,13 @@ public class FindFriends {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isIs_sharing() {
+        return is_sharing;
+    }
+
+    public void setIs_sharing(boolean is_sharing) {
+        this.is_sharing = is_sharing;
     }
 }

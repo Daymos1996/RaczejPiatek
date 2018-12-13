@@ -1,3 +1,4 @@
+
 package com.example.kuba.raczejpiatek.chat;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -6,6 +7,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +20,8 @@ import android.text.format.DateFormat;
 import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.friends.FriendsActivity;
+import com.example.kuba.raczejpiatek.friends.FriendsRecyclerViewAdapter;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
@@ -34,12 +39,13 @@ public class Chat extends AppCompatActivity {
     private DatabaseReference friendsOtherUserReference;
     private DatabaseReference myMessage;
     private String userID;
-    private String currentUserID;
+    private String otherUserID;
     private FirebaseAuth mAuth;
     private static int SIGN_IN_REQUEST_CODE = 1;
-    private FirebaseListAdapter<ChatMessage> adapter;
     RelativeLayout activity_chat;
     FloatingActionButton fab;
+    private RecyclerView messagesListRecyclerView;
+    private ChatRecyclerViewAdapter chatRecyclerViewAdapter;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.logout_menu_button)
@@ -67,7 +73,7 @@ public class Chat extends AppCompatActivity {
             if(requestCode == RESULT_OK)
             {
                 Snackbar.make(activity_chat,"Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).show();
-                displayChatMessage(userID,currentUserID);
+                displayChatMessage(userID,otherUserID);
             }
             else
             {
@@ -83,15 +89,20 @@ public class Chat extends AppCompatActivity {
         activity_chat = findViewById(R.id.activity_chat);
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
+        messagesListRecyclerView = findViewById(R.id.list_of_message);
         userID = user.getUid();
-        currentUserID = getIntent().getStringExtra("key");
+        otherUserID = getIntent().getStringExtra("key");
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText input = findViewById(R.id.input);
-                FirebaseDatabase.getInstance().getReference("Users").child(currentUserID).child(CHAT_TABLE).push().setValue(new ChatMessage(input.getText().toString(),
-                        FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
+                FirebaseDatabase.getInstance().getReference("Users").child(userID).child(CHAT_TABLE).child(otherUserID).push().setValue(new ChatMessage(input.getText().toString(),
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+
+                FirebaseDatabase.getInstance().getReference("Users").child(otherUserID).child(CHAT_TABLE).child(userID).push().setValue(new ChatMessage(input.getText().toString(),
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+
                 input.setText("");
             }
         });
@@ -102,32 +113,23 @@ public class Chat extends AppCompatActivity {
         else
         {
             Snackbar.make(activity_chat,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
-            displayChatMessage(userID,currentUserID);
+            displayChatMessage(userID,otherUserID);
         }
     }
     private void displayChatMessage(String userID, String currentUserID) {
         FirebaseDatabase firebaseDatabase;
         firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference("Users");
-        otherUserReference = myRef.child(currentUserID);
-        friendsOtherUserReference = otherUserReference.child(CHAT_TABLE);
-        Query query = friendsOtherUserReference;
-        Toast.makeText(this, query.toString(), Toast.LENGTH_SHORT).show();
-        FirebaseListOptions<ChatMessage> options = new FirebaseListOptions.Builder<ChatMessage>().setQuery(query, ChatMessage.class)
-                .setLayout(R.layout.list_item).build();
-        ListView listofMessage = findViewById(R.id.list_of_message);
-        adapter = new FirebaseListAdapter<ChatMessage>(options) {
-            @Override
-            protected void populateView(View v,ChatMessage model, int position) {
-                TextView messageText,messageUser,messageTime;
-                messageText = findViewById(R.id.message_text);
-                messageUser = findViewById(R.id.message_user);
-                messageTime = findViewById(R.id.message_time);
-                messageText.setText(model.getMessageText());
-                messageUser.setText(model.getMessageUser());
-                messageTime.setText(DateFormat.format("dd-mm-yyyy (HH:mm:ss)",model.getMessageTime()));
-            }
-        };
-        listofMessage.setAdapter(adapter);
+        otherUserReference = myRef.child(userID);
+        friendsOtherUserReference = otherUserReference.child(CHAT_TABLE).child(otherUserID);
+
+
+
+        chatRecyclerViewAdapter = new ChatRecyclerViewAdapter(Chat.this,friendsOtherUserReference);
+        messagesListRecyclerView.setLayoutManager( new LinearLayoutManager(this));
+        messagesListRecyclerView.setHasFixedSize(true);
+        messagesListRecyclerView.setAdapter(chatRecyclerViewAdapter);
+        chatRecyclerViewAdapter.notifyDataSetChanged();
+
     }
 }

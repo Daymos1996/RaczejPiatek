@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.kuba.raczejpiatek.InviteFriendList.InviteFriendList;
 import com.example.kuba.raczejpiatek.friends.FriendsActivity;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
+import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
 import com.example.kuba.raczejpiatek.searchfriends.searchFriendsActivity;
 import com.example.kuba.raczejpiatek.user.User;
@@ -41,6 +42,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProfilActivity extends AppCompatActivity {
 
@@ -54,6 +56,7 @@ public class ProfilActivity extends AppCompatActivity {
     private DatabaseReference friendsOtherUserReference;
     private DatabaseReference userReference;
     private DatabaseReference friendsUserReference;
+    private DatabaseReference mNotificationDatabase;
     private StorageReference mStorage;
     private TextView emailTextView;
     private TextView first_nameTextView;
@@ -88,6 +91,8 @@ public class ProfilActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
+        mNotificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
+
         final FirebaseUser user = mAuth.getCurrentUser();
         if (!(user.getUid().isEmpty())) {
             userID = user.getUid();
@@ -181,8 +186,9 @@ public class ProfilActivity extends AppCompatActivity {
         deleteUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteUser(userID);
-                Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
+              //  deleteUser(userID);
+              //  Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
+                Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -620,11 +626,22 @@ public class ProfilActivity extends AppCompatActivity {
         FirebaseDatabase firebaseDatabase;
         firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference("Users");
-
         otherUserReference = myRef.child(otherUserID);
         friendsOtherUserReference = otherUserReference.child(FRIENDS_TABLE);
         friendsOtherUserReference.child(userID).setValue("received");
 
+        /*
+        HashMap<String,String> notificationData = new HashMap<>();
+        notificationData.put("from",otherUserID);
+        notificationData.put("type","request");
+
+        mNotificationDatabase.child(userID).push().setValue(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        });
+        */
         userReference = myRef.child(userID);
         friendsUserReference = userReference.child(FRIENDS_TABLE);
         friendsUserReference.child(otherUserID).setValue("sent");

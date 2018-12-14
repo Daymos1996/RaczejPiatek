@@ -25,6 +25,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.facebook.android:facebook-android-sdk:4.28.0'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
@@ -44,7 +46,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:4.2.1'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.+'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }
 apply plugin: 'com.google.gms.google-services'

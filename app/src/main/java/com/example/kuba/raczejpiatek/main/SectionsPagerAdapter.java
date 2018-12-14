@@ -17,18 +17,17 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             return requestsFragment;
 
             case 1:
-                ChatsFragment chatsFragment = new ChatsFragment();
-                return chatsFragment;
-
-            case 2:
                 FriendsFragment friendsFragment = new FriendsFragment();
                 return friendsFragment;
 
-            case 3:
-                MapFragment mapFragment = new MapFragment();
-                return mapFragment;
+            case 2:
+                FindFriendFragment findFragment = new FindFriendFragment();
+                return findFragment;
 
-                default:
+
+
+
+            default:
                     return null;
 
         }
@@ -36,7 +35,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     public CharSequence getPageTitle(int position){
@@ -45,13 +44,11 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return "Zaproszenia";
 
             case 1:
-                return "Wiadomosci";
-
-            case 2:
                 return "Przyjaciele";
 
-            case 3:
-                return "Mapa";
+            case 2:
+                return "Szukaj znajomych";
+
 
             default:
                 return null;

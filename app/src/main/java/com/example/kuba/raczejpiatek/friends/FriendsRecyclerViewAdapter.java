@@ -2,7 +2,10 @@ package com.example.kuba.raczejpiatek.friends;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +29,7 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
     private List<FindFriends> friendsList = new ArrayList<>();
     private Context mContext;
     private DatabaseReference mRef;
+
 
     public FriendsRecyclerViewAdapter(Context mContext, DatabaseReference ref, final ArrayList<String> friendsIdList) {
         this.mContext = mContext;
@@ -75,10 +79,14 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String key = friendsList.get(i).getId();
                 Intent intent = new Intent(mContext, ProfilActivity.class);
                 intent.putExtra("key", key);
                 mContext.startActivity(intent);
+
+
+
             }
         });
     }

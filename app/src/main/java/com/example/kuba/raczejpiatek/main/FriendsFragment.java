@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.R;
@@ -23,6 +24,14 @@ import java.util.ArrayList;
  */
 public class FriendsFragment extends Fragment {
 
+    private RecyclerView friendsListRecyclerView;
+    private DatabaseReference userDatabaseRef;
+    private String userID;
+    public static ArrayList<String> friendsIdList;
+    private static ArrayList<FindFriends> friendsList;
+    private FriendsRecyclerViewAdapter friendsRecyclerViewAdapter;
+    private View mMainView;
+
 
     public FriendsFragment() {
 
@@ -33,7 +42,42 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        mMainView = inflater.inflate(R.layout.fragment_friends, container, false);
+        friendsListRecyclerView = (RecyclerView) mMainView.findViewById(R.id.friendsListRecyclerView);
+        friendsList = new ArrayList<>();
+        userID = getActivity().getIntent().getStringExtra("USER_ID");
+        Toast.makeText(getContext(),"user id = "+userID, Toast.LENGTH_SHORT).show();
+       /* friendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("FRIEND_ID_LIST");
+        if(!friendsIdList.isEmpty()) {
+            userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
+            friendsRecyclerViewAdapter = new FriendsRecyclerViewAdapter(getContext(), userDatabaseRef, friendsIdList);
+            friendsListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            friendsListRecyclerView.setHasFixedSize(true);
+            friendsListRecyclerView.setAdapter(friendsRecyclerViewAdapter);
+            friendsRecyclerViewAdapter.notifyDataSetChanged();
+
+        }
+        */
+        return  mMainView;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+     //  friendsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+       //friendsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+       // friendsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
 
 }

@@ -44,26 +44,27 @@ public class RequestsFragment extends Fragment {
         // Inflate the layout for this fragment
         mMainView = inflater.inflate(R.layout.fragment_requests, container, false);
 
-        friendsListRecyclerView = (RecyclerView) mMainView.findViewById(R.id.friendsListRecyclerView);
+
+       friendsListRecyclerView = (RecyclerView) mMainView.findViewById(R.id.friendsListRecyclerView);
 
         InvitefriendsList = new ArrayList<>();
         userID = getActivity().getIntent().getStringExtra("USER_ID");
         Toast.makeText(getContext(),"user id = "+userID, Toast.LENGTH_SHORT).show();
 
-       /* InvitefriendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("Invite_FRIEND_LIST");
+        InvitefriendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("Invite_FRIEND_LIST");
         if(!InvitefriendsIdList.isEmpty()){
 
 
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
             inviteFriendListRecyclerViewArapter = new InviteFriendListRecyclerViewArapter(getContext(), userDatabaseRef,InvitefriendsIdList,userID);
-            friendsListRecyclerView.setLayoutManager( new LinearLayoutManager(getContext()));
+            /*friendsListRecyclerView.setLayoutManager(new  LinearLayoutManager(getContext()));
             friendsListRecyclerView.setHasFixedSize(true);
             friendsListRecyclerView.setAdapter(inviteFriendListRecyclerViewArapter);
             inviteFriendListRecyclerViewArapter.notifyDataSetChanged();
-
+            */
         }
-        */
+
 
         return mMainView;
     }

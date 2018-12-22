@@ -189,6 +189,9 @@ public class ProfilActivity extends AppCompatActivity {
               //  deleteUser(userID);
               //  Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
                 Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
+                intent.putExtra("USER_ID", userID);
+                intent.putExtra("FRIEND_ID_LIST", friendsIdList);
+                intent.putExtra("Invite_FRIEND_LIST", InviteFriends);
                 startActivity(intent);
             }
         });

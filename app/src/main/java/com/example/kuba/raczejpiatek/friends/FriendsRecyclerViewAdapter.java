@@ -49,6 +49,12 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
                             friend.setProfilURl(zdjecie);
                             friend.setId(id);
                             friendsList.add(friend);
+
+
+
+
+
+
                         }
                     }
                 }
@@ -84,6 +90,7 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
                 Intent intent = new Intent(mContext, ProfilActivity.class);
                 intent.putExtra("key", key);
                 mContext.startActivity(intent);
+
 
 
 

@@ -2,6 +2,7 @@ package com.example.kuba.raczejpiatek.InviteFriendList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.main.RequestsFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,6 +92,7 @@ public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<In
                 Intent intent = new Intent(mContext, ProfilActivity.class);
                 intent.putExtra("key", key);
                 mContext.startActivity(intent);
+
             }
         });
 

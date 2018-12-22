@@ -40,6 +40,8 @@ public class FriendsActivity extends AppCompatActivity {
         friendsListRecyclerView.setAdapter(friendsRecyclerViewAdapter);
         friendsRecyclerViewAdapter.notifyDataSetChanged();
 
+
+
     }
 
 

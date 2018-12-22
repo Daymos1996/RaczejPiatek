@@ -5,11 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,6 +76,7 @@ public class ProfilActivity extends AppCompatActivity {
     private Button inviteFriends;
     private Button inviteUserToFriends;
     private Button goToFriends;
+    private Button goToChat;
     private String userID;
     private ProgressDialog mProgresDiaolog;
     public static final int PICK_IMAGE = 1;
@@ -105,12 +110,12 @@ public class ProfilActivity extends AppCompatActivity {
             userID = getIntent().getStringExtra("key");
 
             currentUserID = user.getUid();
-            goToMapBtn.setVisibility(View.GONE);
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
             goToFriends.setVisibility(View.GONE);
             inviteUserToFriends.setVisibility(View.VISIBLE);
+            inviteFriends.setVisibility(View.GONE);
 
             inviteUserToFriends.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,8 +125,20 @@ public class ProfilActivity extends AppCompatActivity {
                 }
             });
 
+        }
+        else if(getIntent().hasExtra(MapsActivity.KEY_MAPS)) {
+            userID = getIntent().getStringExtra(MapsActivity.KEY_MAPS);
+            password.setVisibility(View.GONE);
+            deleteUser.setVisibility(View.GONE);
+            goToFindFriendsBtn.setVisibility(View.GONE);
+            goToFriends.setVisibility(View.GONE);
+            inviteUserToFriends.setVisibility(View.GONE);
+            inviteFriends.setVisibility(View.GONE);
+            goToChat.setVisibility(View.VISIBLE);
 
-        } else {
+
+        }
+        else {
             userID = user.getUid();
             friendsIdFromDatabase();
         }
@@ -154,14 +171,6 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-
-        goToMapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfilActivity.this, MapsActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -266,6 +275,33 @@ public class ProfilActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setChecked(true);
+
+        BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+                = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        break;
+                    case R.id.navigation_dashboard:
+                        Intent p = new Intent(ProfilActivity.this, MapsActivity.class);
+                        startActivity(p);
+                        return true;
+                    case R.id.navigation_notifications:
+                        Toast.makeText(ProfilActivity.this, "może chat", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return false;
+            }
+        };
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
     }
@@ -654,7 +690,10 @@ public class ProfilActivity extends AppCompatActivity {
 
     private void setFriendsListFromFriendsTable(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-            friendsIdList.add(ds.getKey());
+            if (ds.getValue().equals("accept")) {
+                friendsIdList.add(ds.getKey());
+              //  Toast.makeText(ProfilActivity.this, String.valueOf(friendsIdList.size()), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -690,13 +729,13 @@ public class ProfilActivity extends AppCompatActivity {
         phoneNumberTextView = findViewById(R.id.txtPhoneNumber);
         genderTextView = findViewById(R.id.txtGender);
         profilURL = findViewById(R.id.avatar);
-        goToMapBtn = (Button) findViewById(R.id.go_to_map_btn);
         goToFindFriendsBtn = findViewById(R.id.go_to_find_friends_btn);
         deleteUser = (Button) findViewById(R.id.deleteUser);
         password = (Button) findViewById(R.id.changePassword);
         goToFriends = (Button) findViewById(R.id.go_to_friends_btn);
         inviteUserToFriends = (Button) findViewById(R.id.invite_user_to_friends_btn);
         inviteFriends= (Button) findViewById(R.id.inviteFriends);
+        goToChat = (Button) findViewById(R.id.chatToFriend);
 
     }
 

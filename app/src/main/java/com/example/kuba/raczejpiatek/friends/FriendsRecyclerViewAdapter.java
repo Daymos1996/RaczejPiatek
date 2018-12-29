@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.example.kuba.raczejpiatek.chat.Chat;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,12 +52,6 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
                             friend.setProfilURl(zdjecie);
                             friend.setId(id);
                             friendsList.add(friend);
-
-
-
-
-
-
                         }
                     }
                 }
@@ -76,7 +71,6 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         view = mInflater.inflate(R.layout.all_users_layout, viewGroup, false);
-
         return new ItemViewHolder(view);
     }
 
@@ -87,23 +81,19 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter<FriendsRecy
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String key = friendsList.get(i).getId();
+                String id = friendsList.get(i).getId();
                 Intent intent = new Intent(mContext, ProfilActivity.class);
-                intent.putExtra("key", key);
+                intent.putExtra(StaticVariables.KEY_FRIEND_ID, id);
                 mContext.startActivity(intent);
-
-
-
 
             }
         });
         itemViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String key = friendsList.get(i).getId();
+                String id = friendsList.get(i).getId();
                 Intent intent = new Intent(mContext, Chat.class);
-                intent.putExtra("key", key);
+                intent.putExtra(StaticVariables.KEY_CHAT, id);
                 mContext.startActivity(intent);
                 return true;
             }

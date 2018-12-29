@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.example.kuba.raczejpiatek.friends.FriendsActivity;
 import com.example.kuba.raczejpiatek.friends.FriendsRecyclerViewAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -48,9 +49,9 @@ public class FriendsFragment extends Fragment {
 
 
         //userID= getArguments().getString("key");
-        userID = getActivity().getIntent().getStringExtra("USER_ID");
+        userID = getActivity().getIntent().getStringExtra(StaticVariables.KEY_FRIEND_ID);
         Toast.makeText(getContext(),"user id = "+userID, Toast.LENGTH_SHORT).show();
-        friendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("FRIEND_ID_LIST");
+        friendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra(StaticVariables.FRIEND_ID_LIST);
         if(!friendsIdList.isEmpty()) {
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 

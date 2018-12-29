@@ -16,6 +16,12 @@ public class FindFriends {
         this.id = id;
     }
 
+    public FindFriends(String profilURl, String first_name, String id, boolean is_sharing) {
+        this.profilURl = profilURl;
+        this.first_name = first_name;
+        this.id = id;
+        this.is_sharing = is_sharing;
+    }
 
     public FindFriends(){
 

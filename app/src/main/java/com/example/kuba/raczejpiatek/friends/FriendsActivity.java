@@ -12,6 +12,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
+
 public class FriendsActivity extends AppCompatActivity {
 
     private RecyclerView friendsListRecyclerView;
@@ -29,8 +32,8 @@ public class FriendsActivity extends AppCompatActivity {
         init();
         friendsList = new ArrayList<>();
 
-        userID = getIntent().getStringExtra("USER_ID");
-        friendsIdList = (ArrayList<String>) getIntent().getSerializableExtra("FRIEND_ID_LIST");
+        userID = getIntent().getStringExtra(KEY_FRIEND_ID);
+        friendsIdList = (ArrayList<String>) getIntent().getSerializableExtra(FRIEND_ID_LIST);
 
         userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 

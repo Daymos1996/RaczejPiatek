@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.InviteFriendList.InviteFriendList;
+import com.example.kuba.raczejpiatek.chat.Chat;
 import com.example.kuba.raczejpiatek.friends.FriendsActivity;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
@@ -47,6 +48,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_CHAT;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID_MAP;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_USER_ID;
 
 public class ProfilActivity extends AppCompatActivity {
 
@@ -90,7 +98,9 @@ public class ProfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profil);
         setTitle("Profil");
+
         init();
+
         friendsIdList = new ArrayList<>();
         InviteFriends = new ArrayList<>();
 
@@ -99,17 +109,19 @@ public class ProfilActivity extends AppCompatActivity {
         mNotificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
 
         final FirebaseUser user = mAuth.getCurrentUser();
-        if (!(user.getUid().isEmpty())) {
+        if (user != null) {
             userID = user.getUid();
         }
         mStorage = FirebaseStorage.getInstance().getReference();
         mProgresDiaolog = new ProgressDialog(this);
 
 
-        if (getIntent().hasExtra("key")) {
-            userID = getIntent().getStringExtra("key");
+        if (getIntent().hasExtra(KEY_USER_ID)) {
+            userID = getIntent().getStringExtra(KEY_USER_ID);
 
-            currentUserID = user.getUid();
+            if (user != null) {
+                currentUserID = user.getUid();
+            }
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
@@ -125,9 +137,19 @@ public class ProfilActivity extends AppCompatActivity {
                 }
             });
 
-        }
-        else if(getIntent().hasExtra(MapsActivity.KEY_MAPS)) {
-            userID = getIntent().getStringExtra(MapsActivity.KEY_MAPS);
+        } else if (getIntent().hasExtra(KEY_FRIEND_ID)) {
+            userID = getIntent().getStringExtra(KEY_FRIEND_ID);
+
+            password.setVisibility(View.GONE);
+            deleteUser.setVisibility(View.GONE);
+            goToFindFriendsBtn.setVisibility(View.GONE);
+            goToFriends.setVisibility(View.GONE);
+            inviteUserToFriends.setVisibility(View.GONE);
+            inviteFriends.setVisibility(View.GONE);
+            goToChat.setVisibility(View.GONE);
+
+        } else if(getIntent().hasExtra(KEY_FRIEND_ID_MAP)) {
+            userID = getIntent().getStringExtra(KEY_FRIEND_ID_MAP);
             password.setVisibility(View.GONE);
             deleteUser.setVisibility(View.GONE);
             goToFindFriendsBtn.setVisibility(View.GONE);
@@ -139,7 +161,9 @@ public class ProfilActivity extends AppCompatActivity {
 
         }
         else {
-            userID = user.getUid();
+            if (user != null) {
+                userID = user.getUid();
+            }
             friendsIdFromDatabase();
         }
 
@@ -186,8 +210,8 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilActivity.this, FriendsActivity.class);
-                intent.putExtra("USER_ID", userID);
-                intent.putExtra("FRIEND_ID_LIST", friendsIdList);
+                intent.putExtra(KEY_FRIEND_ID, userID);
+                intent.putExtra(FRIEND_ID_LIST, friendsIdList);
                 startActivity(intent);
             }
         });
@@ -198,9 +222,10 @@ public class ProfilActivity extends AppCompatActivity {
               //  deleteUser(userID);
               //  Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
                 Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
-                intent.putExtra("USER_ID", userID);
-                intent.putExtra("FRIEND_ID_LIST", friendsIdList);
-                intent.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                intent.putExtra(KEY_FRIEND_ID, userID);
+                intent.putExtra(KEY_USER_ID, userID);
+                intent.putExtra(FRIEND_ID_LIST, friendsIdList);
+                intent.putExtra(INVITE_FRIEND_LIST, InviteFriends);
                 startActivity(intent);
             }
         });
@@ -208,8 +233,8 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ProfilActivity.this, InviteFriendList.class);
-                intent.putExtra("USER_ID", userID);
-                intent.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                intent.putExtra(KEY_FRIEND_ID, userID);
+                intent.putExtra(INVITE_FRIEND_LIST, InviteFriends);
                 startActivity(intent);
             }
         });
@@ -294,7 +319,6 @@ public class ProfilActivity extends AppCompatActivity {
                         startActivity(p);
                         return true;
                     case R.id.navigation_notifications:
-                        Toast.makeText(ProfilActivity.this, "może chat", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 return false;

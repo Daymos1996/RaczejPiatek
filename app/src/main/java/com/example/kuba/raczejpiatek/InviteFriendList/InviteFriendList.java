@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -32,8 +33,8 @@ public class InviteFriendList extends AppCompatActivity {
         friendsListRecyclerView = (RecyclerView) findViewById(R.id.friendsListRecyclerView);
 
         InvitefriendsList = new ArrayList<>();
-        userID = getIntent().getStringExtra("USER_ID");
-        InvitefriendsIdList = (ArrayList<String>) getIntent().getSerializableExtra("Invite_FRIEND_LIST");
+        userID = getIntent().getStringExtra(StaticVariables.KEY_FRIEND_ID);
+        InvitefriendsIdList = (ArrayList<String>) getIntent().getSerializableExtra(StaticVariables.INVITE_FRIEND_LIST);
         if(!InvitefriendsIdList.isEmpty()){
 
 

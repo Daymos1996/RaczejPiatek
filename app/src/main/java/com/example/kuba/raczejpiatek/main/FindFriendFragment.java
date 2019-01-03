@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -112,7 +113,7 @@ public class FindFriendFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(), ProfilActivity.class);
-                        intent.putExtra("key", key);
+                        intent.putExtra(StaticVariables.KEY_USER_ID, key);
                         startActivity(intent);
                     }
                 });

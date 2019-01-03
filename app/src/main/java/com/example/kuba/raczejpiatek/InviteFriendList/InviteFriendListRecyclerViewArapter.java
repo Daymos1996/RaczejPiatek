@@ -25,6 +25,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_USER_ID;
+
 public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<InviteFriendListRecyclerViewArapter.ItemViewHolder> {
 
     private List<FindFriends> InvitefriendsList = new ArrayList<>();
@@ -90,7 +93,7 @@ public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<In
             public void onClick(View v) {
                 String key = InvitefriendsList.get(i).getId();
                 Intent intent = new Intent(mContext, ProfilActivity.class);
-                intent.putExtra("key", key);
+                intent.putExtra(KEY_FRIEND_ID, key);
                 mContext.startActivity(intent);
 
             }
@@ -127,14 +130,6 @@ public class InviteFriendListRecyclerViewArapter extends RecyclerView.Adapter<In
             super(itemView);
             myName = itemView.findViewById(R.id.txtFriendName);
             myImage = itemView.findViewById(R.id.profileFriendPhoto);
-        }
-
-        public TextView getMyName() {
-            return myName;
-        }
-
-        public ImageView getMyImage() {
-            return myImage;
         }
 
     }

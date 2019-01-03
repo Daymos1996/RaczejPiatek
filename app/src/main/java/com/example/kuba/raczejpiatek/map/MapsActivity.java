@@ -28,6 +28,7 @@ import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.MyCallback;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationListener;
@@ -83,6 +84,9 @@ public class MapsActivity extends FragmentActivity implements
     private ArrayList<String> friendsIdFromDatabaseArrayList;
     private String userId;
     private Target mTarget;
+    private String userID;
+    private ArrayList<String> friendsIdList;
+    private ArrayList<String> InviteFriends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,11 @@ public class MapsActivity extends FragmentActivity implements
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userIdString = user.getUid();
+
+        userID = getIntent().getStringExtra("USER_ID");
+        friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra("FRIEND_ID_LIST");
+        InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra("Invite_FRIEND_LIST");
+
 
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
 
@@ -124,6 +133,12 @@ public class MapsActivity extends FragmentActivity implements
                     case R.id.navigation_notifications:
                         Toast.makeText(MapsActivity.this, "może chat", Toast.LENGTH_SHORT).show();
                         break;
+                    case R.id.navigation_friends:
+                        Intent intent = new Intent(MapsActivity.this, MainActivity.class);
+                        intent.putExtra("USER_ID", userID);
+                        intent.putExtra("FRIEND_ID_LIST", friendsIdList);
+                        intent.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                        startActivity(intent);
                 }
                 return false;
             }

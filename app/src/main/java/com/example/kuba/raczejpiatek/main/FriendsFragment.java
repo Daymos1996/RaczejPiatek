@@ -47,20 +47,17 @@ public class FriendsFragment extends Fragment {
         friendsListRecyclerView = (RecyclerView) mMainView.findViewById(R.id.friendsListRecyclerView);
 
 
-        //userID= getArguments().getString("key");
         userID = getActivity().getIntent().getStringExtra("USER_ID");
-        Toast.makeText(getContext(),"user id = "+userID, Toast.LENGTH_SHORT).show();
         friendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("FRIEND_ID_LIST");
         if(!friendsIdList.isEmpty()) {
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-            friendsRecyclerViewAdapter = new FriendsRecyclerViewAdapter(getContext(), userDatabaseRef, friendsIdList);
-        /*
-            friendsListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            friendsRecyclerViewAdapter = new FriendsRecyclerViewAdapter(getActivity().getBaseContext(), userDatabaseRef, friendsIdList);
+            friendsListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
             friendsListRecyclerView.setHasFixedSize(true);
             friendsListRecyclerView.setAdapter(friendsRecyclerViewAdapter);
             friendsRecyclerViewAdapter.notifyDataSetChanged();
-        */
+
         }
 
         return  mMainView;

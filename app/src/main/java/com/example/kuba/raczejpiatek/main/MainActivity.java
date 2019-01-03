@@ -1,6 +1,8 @@
 package com.example.kuba.raczejpiatek.main;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
@@ -19,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private TabLayout mTabLayout;
+    private String userID;
+    private ArrayList<String> friendsIdList;
+    private ArrayList<String> InviteFriends;
 
 
     @Override
@@ -50,6 +58,49 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
+
+        userID = getIntent().getStringExtra("USER_ID");
+        friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra("FRIEND_ID_LIST");
+        InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra("Invite_FRIEND_LIST");
+
+
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(3);
+        menuItem.setChecked(true);
+
+        BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+                = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        Intent intent = new Intent(MainActivity.this, ProfilActivity.class);
+                        startActivity(intent);
+
+                        break;
+                    case R.id.navigation_dashboard:
+                        Intent p = new Intent(MainActivity.this, MapsActivity.class);
+                        p.putExtra("USER_ID", userID);
+                        p.putExtra("FRIEND_ID_LIST", friendsIdList);
+                        p.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                        startActivity(p);
+                        return true;
+                    case R.id.navigation_notifications:
+                        Toast.makeText(MainActivity.this, "może chat", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.navigation_friends:
+                        break;
+
+                }
+                return false;
+            }
+        };
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
     }

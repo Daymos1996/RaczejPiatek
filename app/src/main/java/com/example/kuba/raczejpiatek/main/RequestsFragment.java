@@ -49,20 +49,18 @@ public class RequestsFragment extends Fragment {
 
         InvitefriendsList = new ArrayList<>();
         userID = getActivity().getIntent().getStringExtra("USER_ID");
-        Toast.makeText(getContext(),"user id = "+userID, Toast.LENGTH_SHORT).show();
-
         InvitefriendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("Invite_FRIEND_LIST");
         if(!InvitefriendsIdList.isEmpty()){
 
 
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-            inviteFriendListRecyclerViewArapter = new InviteFriendListRecyclerViewArapter(getContext(), userDatabaseRef,InvitefriendsIdList,userID);
-            /*friendsListRecyclerView.setLayoutManager(new  LinearLayoutManager(getContext()));
+            inviteFriendListRecyclerViewArapter = new InviteFriendListRecyclerViewArapter(getActivity().getBaseContext(), userDatabaseRef,InvitefriendsIdList,userID);friendsListRecyclerView.setHasFixedSize(true);
+            friendsListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
             friendsListRecyclerView.setHasFixedSize(true);
             friendsListRecyclerView.setAdapter(inviteFriendListRecyclerViewArapter);
             inviteFriendListRecyclerViewArapter.notifyDataSetChanged();
-            */
+
         }
 
 

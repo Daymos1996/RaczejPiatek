@@ -28,6 +28,8 @@ import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.MyCallback;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
+import com.example.kuba.raczejpiatek.chat.Chat;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.common.ConnectionResult;
@@ -57,8 +59,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.core.Tag;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
+
+import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_USER_ID;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
@@ -75,15 +83,18 @@ public class MapsActivity extends FragmentActivity implements
     private LocationRequest locationRequest;
     private Location lastLocation;
     private Marker currentUserLocationMarker;
-    private static final int Request_User_Location_Code = 99;
-    public static final String KEY_MAPS = "KEY_MAPS";
+    private Marker currentFriendLocationMarker;
+
     private double latitide, longitude;
     private double[] latLngDouble = new double[2];
     private FindFriends friend = new FindFriends();
+    private String id, name, profilURl;
+    private boolean is_sharing;
     private String userIdString;
     private ArrayList<String> friendsIdFromDatabaseArrayList;
     private String userId;
     private Target mTarget;
+    private Thread thread;
     private String userID;
     private ArrayList<String> friendsIdList;
     private ArrayList<String> InviteFriends;
@@ -92,16 +103,17 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        userIdString = user.getUid();
+        if (user != null) {
+            userIdString = user.getUid();
+        }
 
-        userID = getIntent().getStringExtra("USER_ID");
-        friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra("FRIEND_ID_LIST");
-        InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra("Invite_FRIEND_LIST");
-
-
+        userID = getIntent().getStringExtra(KEY_FRIEND_ID);
+        friendsIdList = (ArrayList<String>) getIntent().getSerializableExtra(FRIEND_ID_LIST);
+        InviteFriends = (ArrayList<String>) getIntent().getSerializableExtra(INVITE_FRIEND_LIST);
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
 
 
@@ -109,6 +121,13 @@ public class MapsActivity extends FragmentActivity implements
             checkUserLocationPermission();
         }
 
+
+        setBottomNavigationView();
+        updateLocationFriendsOnMap();
+
+    }
+
+    private void setBottomNavigationView() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -125,20 +144,24 @@ public class MapsActivity extends FragmentActivity implements
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        Intent p = new Intent(MapsActivity.this, ProfilActivity.class);
-                        startActivity(p);
+                        Intent intentProfil = new Intent(MapsActivity.this, ProfilActivity.class);
+                        startActivity(intentProfil);
                         break;
                     case R.id.navigation_dashboard:
                         return true;
                     case R.id.navigation_notifications:
-                        Toast.makeText(MapsActivity.this, "może chat", Toast.LENGTH_SHORT).show();
+                        Intent intentChat = new Intent(MapsActivity.this, Chat.class);
+                        intentChat.putExtra(StaticVariables.KEY_CHAT, userIdString);
+                        startActivity(intentChat);
                         break;
                     case R.id.navigation_friends:
                         Intent intent = new Intent(MapsActivity.this, MainActivity.class);
-                        intent.putExtra("USER_ID", userID);
-                        intent.putExtra("FRIEND_ID_LIST", friendsIdList);
-                        intent.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                        intent.putExtra(KEY_USER_ID, userID);
+                        intent.putExtra(KEY_FRIEND_ID, userID);
+                        intent.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        intent.putExtra(INVITE_FRIEND_LIST, InviteFriends);
                         startActivity(intent);
+
                 }
                 return false;
             }
@@ -146,9 +169,36 @@ public class MapsActivity extends FragmentActivity implements
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
     }
 
+    private void updateLocationFriendsOnMap() {
+        thread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!thread.isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for (int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
+                                    setLocationFriendsInMap(friendsIdFromDatabaseArrayList.get(i));
+                                    //  Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(i), Toast.LENGTH_SHORT).show();
+
+                                }
+
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        thread.start();
+
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -165,9 +215,9 @@ public class MapsActivity extends FragmentActivity implements
     public boolean checkUserLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Request_User_Location_Code);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, StaticVariables.REQUEST_USER_LOCATION_CODE);
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Request_User_Location_Code);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, StaticVariables.REQUEST_USER_LOCATION_CODE);
             }
             return false;
         } else {
@@ -179,7 +229,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case Request_User_Location_Code:
+            case StaticVariables.REQUEST_USER_LOCATION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         if (googleApiClient == null) {
@@ -210,10 +260,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         latitide = location.getLatitude();
         longitude = location.getLongitude();
-
         lastLocation = location;
-
-        //  Toast.makeText(this, latitide + " , " + longitude, Toast.LENGTH_SHORT).show();
 
         if (currentUserLocationMarker != null) {
             currentUserLocationMarker.remove();
@@ -223,13 +270,9 @@ public class MapsActivity extends FragmentActivity implements
 
         shareLocation();
 
-        for (int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
-            setLocationFriendsInMap(friendsIdFromDatabaseArrayList.get(i));
-            //  Toast.makeText(MapsActivity.this, friendsIdFromDatabaseArrayList.get(i), Toast.LENGTH_SHORT).show();
-
-        }
-
-
+        // for (int i = 0; i < friendsIdFromDatabaseArrayList.size(); i++) {
+        //      setLocationFriendsInMap(friendsIdFromDatabaseArrayList.get(i));
+        //  }
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Obecna pozycja");
@@ -283,21 +326,6 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
-    @Override
-    protected void onDestroy() {
-        reference.child(user.getUid()).child("is_sharing").setValue("false")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(MapsActivity.this, "Udostepnianie lokalizacji zostało wstrzymane", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MapsActivity.this, "Udostepnianie lokalizacji nie zostało zatrzymane", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        super.onDestroy();
-    }
 
     private ArrayList<String> getIdUsersFromTableFriendsInDatabase(String userID) {
         final ArrayList<String> usersIdArrayList = new ArrayList<>();
@@ -325,21 +353,20 @@ public class MapsActivity extends FragmentActivity implements
     private void setLocationFriendsInMap(String userID) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         friendsReferences = database.getReference().child("Users/" + userID);
-        latLngDouble = new double[2];
-        friend = new FindFriends();
-        userId = userID;
+        // userId = userID;
         readData(new FirebaseCallback() {
             @Override
-            public void onCallback(double[] d, final FindFriends f) {
+            public void onCallback(double[] d, final FindFriends friend) {
                 if (d.length > 1) {
                     final LatLng latLng = new LatLng(d[0], d[1]);
-                    setTargetOnImage(latLng, f);
-                    setImageIconOnMarkerUsingPicasso(f);
+                    setTargetOnImage(latLng, friend);
+                    setImageIconOnMarkerUsingPicasso(friend);
 
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            showActionsDialog(f.getId());
+                            showActionsDialog(friend.getId());
+                            Toast.makeText(MapsActivity.this, friend.getId(), Toast.LENGTH_SHORT).show();
                             return false;
                         }
 
@@ -358,7 +385,7 @@ public class MapsActivity extends FragmentActivity implements
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("lat").exists() && dataSnapshot.child("lng").exists()) {
                     setLatAndLngToDoubleTable(dataSnapshot);
-                    setFriendData(dataSnapshot);
+                    friend = setFriendData(dataSnapshot);
                     firebaseCallback.onCallback(latLngDouble, friend);
                 }
 
@@ -379,45 +406,31 @@ public class MapsActivity extends FragmentActivity implements
         latLngDouble[1] = Double.parseDouble(lng);
     }
 
-    private void setFriendData(DataSnapshot dataSnapshot) {
+    private FindFriends setFriendData(DataSnapshot dataSnapshot) {
         String id = dataSnapshot.getKey();
         String name = dataSnapshot.child("first_name").getValue(String.class);
-        String photo = dataSnapshot.child("profilURl").getValue(String.class);
+        String profilURl = dataSnapshot.child("profilURl").getValue(String.class);
         String sharing = dataSnapshot.child("is_sharing").getValue(String.class);
-        boolean sharingB = Boolean.parseBoolean(sharing);
-        friend.setFirst_name(name);
-        friend.setProfilURl(photo);
-        friend.setId(id);
-        friend.setIs_sharing(sharingB);
-    }
+        boolean is_sharing = Boolean.parseBoolean(sharing);
+        FindFriends friend = new FindFriends(profilURl, name, id, is_sharing);
 
-    private void setImageIconOnMarkerUsingPicasso(FindFriends f) {
-        int color;
-     //   Toast.makeText(MapsActivity.this, String.valueOf(f.isIs_sharing()), Toast.LENGTH_SHORT).show();
-        if (f.isIs_sharing()) {
-            color = Color.GREEN;
-        } else {
-            color = Color.RED;
-        }
-        Picasso.with(MapsActivity.this)
-                .load(f.getProfilURl())
-                .resize(250, 250)
-                .centerCrop()
-                .transform(new BubbleTransformation(10, color))
-                .into(mTarget);
-
+        return friend;
     }
 
     private void setTargetOnImage(final LatLng latLng, final FindFriends f) {
         mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                currentUserLocationMarker = mMap.addMarker(new MarkerOptions()
+                if (currentFriendLocationMarker != null) {
+                    currentFriendLocationMarker.remove();
+                }
+
+                currentFriendLocationMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(bitmap))
                         .title(f.getFirst_name())
-                        .snippet("test address")
                 );
             }
+
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
@@ -430,6 +443,24 @@ public class MapsActivity extends FragmentActivity implements
             }
         };
     }
+
+    private void setImageIconOnMarkerUsingPicasso(FindFriends f) {
+        int color;
+        if (f.isIs_sharing()) {
+            color = Color.GREEN;
+        } else {
+            color = Color.RED;
+        }
+
+        Picasso.with(MapsActivity.this)
+                .load(f.getProfilURl())
+                .resize(250, 250)
+                .centerCrop()
+                .transform(new BubbleTransformation(10, color))
+                .into(mTarget);
+
+    }
+
 
     private interface FirebaseCallback {
         void onCallback(double[] d, FindFriends friend);
@@ -446,7 +477,7 @@ public class MapsActivity extends FragmentActivity implements
                 if (which == 0) {
                     showProfil(id);
                 } else {
-                    showChat();
+                    showChat(id);
 
                 }
             }
@@ -456,13 +487,31 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private void showProfil(String id) {
-        String key = id;
         Intent intent = new Intent(MapsActivity.this, ProfilActivity.class);
-        intent.putExtra(KEY_MAPS, key);
+        intent.putExtra(StaticVariables.KEY_FRIEND_ID, id);
         startActivity(intent);
     }
 
-    private void showChat() {
+    private void showChat(String id) {
+        Intent intent = new Intent(MapsActivity.this, Chat.class);
+        intent.putExtra(StaticVariables.KEY_CHAT, id);
+        startActivity(intent);
+    }
 
+
+    @Override
+    protected void onDestroy() {
+        reference.child(user.getUid()).child("is_sharing").setValue("false")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MapsActivity.this, "Udostepnianie lokalizacji zostało wstrzymane", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MapsActivity.this, "Udostepnianie lokalizacji nie zostało zatrzymane", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        super.onDestroy();
     }
 }

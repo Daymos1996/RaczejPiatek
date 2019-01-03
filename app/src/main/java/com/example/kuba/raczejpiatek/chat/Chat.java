@@ -15,12 +15,15 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import static com.example.kuba.raczejpiatek.StaticVariables.CHAT_TABLE;
+
 public class Chat extends AppCompatActivity {
-    private  static final String CHAT_TABLE = "chat";
     private DatabaseReference myRef;
     private DatabaseReference otherUserReference;
     private DatabaseReference friendsOtherUserReference;
@@ -75,13 +78,36 @@ public class Chat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        activity_chat = findViewById(R.id.activity_chat);
+
+        init();
+
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            userID = user.getUid();
+        }
+
+        otherUserID = getIntent().getStringExtra(StaticVariables.KEY_CHAT);
+
+        setOnCLickActionOnSendMessageButton();
+        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+        {
+            //startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(),SIGN_IN_REQUEST_CODE);
+        }
+        else
+        {
+            Snackbar.make(activity_chat,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
+            displayChatMessage(userID,otherUserID);
+        }
+    }
+
+    private void init() {
+        activity_chat = findViewById(R.id.activity_chat);
         messagesListRecyclerView = findViewById(R.id.list_of_message);
-        userID = user.getUid();
-        otherUserID = getIntent().getStringExtra("key");
         fab = findViewById(R.id.fab);
+    }
+
+    private void setOnCLickActionOnSendMessageButton() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,15 +121,6 @@ public class Chat extends AppCompatActivity {
                 input.setText("");
             }
         });
-        if(FirebaseAuth.getInstance().getCurrentUser()==null)
-        {
-            //startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(),SIGN_IN_REQUEST_CODE);
-        }
-        else
-        {
-            Snackbar.make(activity_chat,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
-            displayChatMessage(userID,otherUserID);
-        }
     }
     private void displayChatMessage(String userID, String currentUserID) {
         FirebaseDatabase firebaseDatabase;

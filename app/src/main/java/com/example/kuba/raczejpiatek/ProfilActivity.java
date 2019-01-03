@@ -49,6 +49,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_USER_ID;
+
 public class ProfilActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -100,20 +105,20 @@ public class ProfilActivity extends AppCompatActivity {
         mNotificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
 
         final FirebaseUser user = mAuth.getCurrentUser();
-        if (!(user.getUid().isEmpty())) {
+        if (user != null) {
             userID = user.getUid();
         }
         mStorage = FirebaseStorage.getInstance().getReference();
         mProgresDiaolog = new ProgressDialog(this);
 
 
-        if (getIntent().hasExtra("key")) {
-            userID = getIntent().getStringExtra("key");
+        if (getIntent().hasExtra(StaticVariables.KEY_USER_ID)) {
+            userID = getIntent().getStringExtra(StaticVariables.KEY_USER_ID);
 
-            currentUserID = user.getUid();
-
+            if (user != null) {
+                currentUserID = user.getUid();
+            }
             inviteUserToFriends.setVisibility(View.VISIBLE);
-
             inviteUserToFriends.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -122,17 +127,12 @@ public class ProfilActivity extends AppCompatActivity {
                 }
             });
 
-        }
-        else if(getIntent().hasExtra(MapsActivity.KEY_MAPS)) {
-            userID = getIntent().getStringExtra(MapsActivity.KEY_MAPS);
-
-            inviteUserToFriends.setVisibility(View.GONE);
-
-
-
-        }
-        else {
-            userID = user.getUid();
+        } else if (getIntent().hasExtra(KEY_FRIEND_ID)) {
+            userID = getIntent().getStringExtra(KEY_FRIEND_ID);
+        } else {
+            if (user != null) {
+                userID = user.getUid();
+            }
             friendsIdFromDatabase();
         }
 
@@ -239,19 +239,19 @@ public class ProfilActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_dashboard:
                         Intent p = new Intent(ProfilActivity.this, MapsActivity.class);
-                        p.putExtra("USER_ID", userID);
-                        p.putExtra("FRIEND_ID_LIST", friendsIdList);
-                        p.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                        p.putExtra(KEY_FRIEND_ID, userID);
+                        p.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        p.putExtra(INVITE_FRIEND_LIST, InviteFriends);
                         startActivity(p);
                         return true;
                     case R.id.navigation_notifications:
-                        Toast.makeText(ProfilActivity.this, "może chat", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_friends:
                         Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
-                        intent.putExtra("USER_ID", userID);
-                        intent.putExtra("FRIEND_ID_LIST", friendsIdList);
-                        intent.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                        intent.putExtra(KEY_FRIEND_ID, userID);
+                        intent.putExtra(KEY_USER_ID, userID);
+                        intent.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        intent.putExtra(INVITE_FRIEND_LIST, InviteFriends);
                         startActivity(intent);
 
                 }
@@ -650,7 +650,7 @@ public class ProfilActivity extends AppCompatActivity {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
             if (ds.getValue().equals("accept")) {
                 friendsIdList.add(ds.getKey());
-              //  Toast.makeText(ProfilActivity.this, String.valueOf(friendsIdList.size()), Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(ProfilActivity.this, String.valueOf(friendsIdList.size()), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -670,10 +670,10 @@ public class ProfilActivity extends AppCompatActivity {
 
         });
     }
-    private void setFriendRequstFromFriendTable(DataSnapshot dataSnapshot)
-    {
-        for(DataSnapshot ds: dataSnapshot.getChildren()){
-            if(ds.getValue().equals("received")){
+
+    private void setFriendRequstFromFriendTable(DataSnapshot dataSnapshot) {
+        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+            if (ds.getValue().equals("received")) {
                 InviteFriends.add(ds.getKey());
             }
         }
@@ -701,34 +701,33 @@ public class ProfilActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        getMenuInflater().inflate(R.menu.profil_menu,menu);
+        getMenuInflater().inflate(R.menu.profil_menu, menu);
 
-        return  true;
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if(item.getItemId()== R.id.changePassword){
+        if (item.getItemId() == R.id.changePassword) {
             UpdatePassword(userID);
         }
-        if(item.getItemId()== R.id.deleteUser){
+        if (item.getItemId() == R.id.deleteUser) {
             deleteUser(userID);
             Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
         }
-        if(item.getItemId()== R.id.main_logout){
-          //  mAuth.getInstance().signOut();
+        if (item.getItemId() == R.id.main_logout) {
+            //  mAuth.getInstance().signOut();
             sendToStart();
         }
 
 
-
-
-        return  true;
+        return true;
     }
+
     private void sendToStart() {
-        Intent startIntent = new Intent(ProfilActivity.this,LoginActivity.class);
+        Intent startIntent = new Intent(ProfilActivity.this, LoginActivity.class);
         startActivity(startIntent);
     }
 }

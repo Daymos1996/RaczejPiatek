@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +24,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+
+import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
+
+import static com.example.kuba.raczejpiatek.StaticVariables.KEY_USER_ID;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private TabLayout mTabLayout;
-    private String userID;
+    private String userID, friendID;
     private ArrayList<String> friendsIdList;
     private ArrayList<String> InviteFriends;
 
@@ -60,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
 
 
-        userID = getIntent().getStringExtra("USER_ID");
-        friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra("FRIEND_ID_LIST");
-        InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra("Invite_FRIEND_LIST");
+        userID = getIntent().getStringExtra(KEY_USER_ID);
+        friendID = getIntent().getStringExtra(KEY_FRIEND_ID);
+        friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra(FRIEND_ID_LIST);
+        InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra(INVITE_FRIEND_LIST);
 
 
 
@@ -84,9 +92,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_dashboard:
                         Intent p = new Intent(MainActivity.this, MapsActivity.class);
-                        p.putExtra("USER_ID", userID);
-                        p.putExtra("FRIEND_ID_LIST", friendsIdList);
-                        p.putExtra("Invite_FRIEND_LIST", InviteFriends);
+                        p.putExtra(KEY_USER_ID, userID);
+                        p.putExtra(KEY_FRIEND_ID, friendID);
+                        p.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        p.putExtra(INVITE_FRIEND_LIST, InviteFriends);
                         startActivity(p);
                         return true;
                     case R.id.navigation_notifications:

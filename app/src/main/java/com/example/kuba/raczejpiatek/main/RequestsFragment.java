@@ -14,6 +14,7 @@ import com.example.kuba.raczejpiatek.FindFriends;
 import com.example.kuba.raczejpiatek.InviteFriendList.InviteFriendList;
 import com.example.kuba.raczejpiatek.InviteFriendList.InviteFriendListRecyclerViewArapter;
 import com.example.kuba.raczejpiatek.R;
+import com.example.kuba.raczejpiatek.StaticVariables;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -48,8 +49,8 @@ public class RequestsFragment extends Fragment {
        friendsListRecyclerView = (RecyclerView) mMainView.findViewById(R.id.friendsListRecyclerView);
 
         InvitefriendsList = new ArrayList<>();
-        userID = getActivity().getIntent().getStringExtra("USER_ID");
-        InvitefriendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra("Invite_FRIEND_LIST");
+        userID = getActivity().getIntent().getStringExtra(StaticVariables.KEY_FRIEND_ID);
+        InvitefriendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra(StaticVariables.INVITE_FRIEND_LIST);
         if(!InvitefriendsIdList.isEmpty()){
 
 

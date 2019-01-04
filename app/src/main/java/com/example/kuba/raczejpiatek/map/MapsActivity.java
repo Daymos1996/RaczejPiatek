@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -25,13 +24,12 @@ import android.widget.Toast;
 
 import com.example.kuba.raczejpiatek.BubbleTransformation;
 import com.example.kuba.raczejpiatek.FindFriends;
-import com.example.kuba.raczejpiatek.MyCallback;
 import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
 import com.example.kuba.raczejpiatek.StaticVariables;
 import com.example.kuba.raczejpiatek.chat.Chat;
+import com.example.kuba.raczejpiatek.chatList.ChatFriendsListActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
-import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,7 +40,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -56,13 +53,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.Tag;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 
+import static com.example.kuba.raczejpiatek.StaticVariables.CHAT_FRIEND_ID_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
@@ -98,6 +94,8 @@ public class MapsActivity extends FragmentActivity implements
     private String userID;
     private ArrayList<String> friendsIdList;
     private ArrayList<String> InviteFriends;
+    private ArrayList<String>  chatsFriendsList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +109,11 @@ public class MapsActivity extends FragmentActivity implements
             userIdString = user.getUid();
         }
 
+
         userID = getIntent().getStringExtra(KEY_FRIEND_ID);
         friendsIdList = (ArrayList<String>) getIntent().getSerializableExtra(FRIEND_ID_LIST);
         InviteFriends = (ArrayList<String>) getIntent().getSerializableExtra(INVITE_FRIEND_LIST);
+        chatsFriendsList=(ArrayList<String>) getIntent().getSerializableExtra(CHAT_FRIEND_ID_LIST);
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
 
 
@@ -150,17 +150,23 @@ public class MapsActivity extends FragmentActivity implements
                     case R.id.navigation_dashboard:
                         return true;
                     case R.id.navigation_notifications:
-                        Intent intentChat = new Intent(MapsActivity.this, Chat.class);
-                        intentChat.putExtra(StaticVariables.KEY_CHAT, userIdString);
-                        startActivity(intentChat);
-                        break;
+                        Intent ch = new Intent(MapsActivity.this, ChatFriendsListActivity.class);
+                        ch.putExtra(KEY_FRIEND_ID, userID);
+                        ch.putExtra(KEY_USER_ID, userID);
+                        ch.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        ch.putExtra(INVITE_FRIEND_LIST, InviteFriends);
+                        ch.putExtra(CHAT_FRIEND_ID_LIST, chatsFriendsList);
+                        startActivity(ch);
+                        return true;
                     case R.id.navigation_friends:
                         Intent intent = new Intent(MapsActivity.this, MainActivity.class);
                         intent.putExtra(KEY_USER_ID, userID);
                         intent.putExtra(KEY_FRIEND_ID, userID);
                         intent.putExtra(FRIEND_ID_LIST, friendsIdList);
                         intent.putExtra(INVITE_FRIEND_LIST, InviteFriends);
+                        intent.putExtra(CHAT_FRIEND_ID_LIST, chatsFriendsList);
                         startActivity(intent);
+                        return true;
 
                 }
                 return false;

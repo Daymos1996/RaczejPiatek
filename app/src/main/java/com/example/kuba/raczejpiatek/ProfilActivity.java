@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,12 +21,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kuba.raczejpiatek.InviteFriendList.InviteFriendList;
-import com.example.kuba.raczejpiatek.friends.FriendsActivity;
+import com.example.kuba.raczejpiatek.chatList.ChatFriendsListActivity;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
-import com.example.kuba.raczejpiatek.searchfriends.searchFriendsActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,12 +44,13 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
 import static com.example.kuba.raczejpiatek.StaticVariables.KEY_USER_ID;
+import static com.example.kuba.raczejpiatek.StaticVariables.CHAT_FRIEND_ID_LIST;
+
 
 public class ProfilActivity extends AppCompatActivity {
 
@@ -83,6 +81,7 @@ public class ProfilActivity extends AppCompatActivity {
     private String currentUserID;
     private ArrayList<String> friendsIdList;
     private ArrayList<String> InviteFriends;
+    private ArrayList<String> chatsFriendsList;
     private Toolbar mToolbar;
 
 
@@ -99,6 +98,7 @@ public class ProfilActivity extends AppCompatActivity {
         init();
         friendsIdList = new ArrayList<>();
         InviteFriends = new ArrayList<>();
+        chatsFriendsList = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -134,6 +134,7 @@ public class ProfilActivity extends AppCompatActivity {
                 userID = user.getUid();
             }
             friendsIdFromDatabase();
+            chatFriendsIdFromDatabase();
         }
 
 
@@ -242,17 +243,28 @@ public class ProfilActivity extends AppCompatActivity {
                         p.putExtra(KEY_FRIEND_ID, userID);
                         p.putExtra(FRIEND_ID_LIST, friendsIdList);
                         p.putExtra(INVITE_FRIEND_LIST, InviteFriends);
+                        p.putExtra(CHAT_FRIEND_ID_LIST, chatsFriendsList);
                         startActivity(p);
                         return true;
                     case R.id.navigation_notifications:
-                        break;
+                        Intent ch = new Intent(ProfilActivity.this, ChatFriendsListActivity.class);
+                        ch.putExtra(KEY_FRIEND_ID, userID);
+                        ch.putExtra(KEY_USER_ID, userID);
+                        ch.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        ch.putExtra(INVITE_FRIEND_LIST, InviteFriends);
+                        ch.putExtra(CHAT_FRIEND_ID_LIST, chatsFriendsList);
+                        startActivity(ch);
+                        return true;
+
                     case R.id.navigation_friends:
                         Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
                         intent.putExtra(KEY_FRIEND_ID, userID);
                         intent.putExtra(KEY_USER_ID, userID);
                         intent.putExtra(FRIEND_ID_LIST, friendsIdList);
                         intent.putExtra(INVITE_FRIEND_LIST, InviteFriends);
+                        intent.putExtra(CHAT_FRIEND_ID_LIST, chatsFriendsList);
                         startActivity(intent);
+                        return true;
 
                 }
                 return false;
@@ -655,6 +667,27 @@ public class ProfilActivity extends AppCompatActivity {
         }
     }
 
+    private void setChatFriendsList(DataSnapshot dataSnapshot) {
+        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                chatsFriendsList.add(ds.getKey());
+        }
+    }
+    private void chatFriendsIdFromDatabase() {
+        DatabaseReference allUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users/" + userID + "/chat");
+        allUserDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                setChatFriendsList(dataSnapshot);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+
+        });
+    }
     private void friendsIdFromDatabase() {
         DatabaseReference allUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users/" + userID + "/friends");
         allUserDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {

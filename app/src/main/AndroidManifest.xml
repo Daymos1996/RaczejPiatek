@@ -17,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_ap_id" />
@@ -71,6 +74,7 @@
         <activity android:name=".friends.FriendsActivity" />
         <activity android:name=".InviteFriendList.InviteFriendList" />
         <activity android:name=".chat.Chat" />
+        <activity android:name=".chatList.ChatFriendsListActivity"></activity>
     </application>
 
 </manifest>

@@ -373,8 +373,6 @@ public class MapsActivity extends FragmentActivity implements
                 if (d.length > 1) {
                     final LatLng latLng = new LatLng(d[0], d[1]);
                     setTargetOnImage(latLng, friend);
-                    //    setImageIconOnMarkerUsingPicasso(friend);
-                  //  Toast.makeText(MapsActivity.this, friend.getFirst_name() + " " + friend.isIs_sharing(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -421,6 +419,8 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void setTargetOnImage(final LatLng latLng, final FindFriends f) {
+        boolean isSharing = true;
+        isSharing = f.isIs_sharing();
 
         mTarget = new Target() {
             @Override
@@ -430,8 +430,8 @@ public class MapsActivity extends FragmentActivity implements
                         .snippet(f.getId())
                         .title(f.getFirst_name())
                 );
-            }
 
+            }
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
@@ -444,18 +444,18 @@ public class MapsActivity extends FragmentActivity implements
             }
         };
 
-
-        if (f.isIs_sharing()) {
+        if (isSharing) {
             Picasso.with(MapsActivity.this)
                     .load(f.getProfilURl())
-                    .resize(250, 250)
+                    .resize(249, 250)
                     .centerCrop()
                     .transform(new BubbleTransformation(5, Color.GREEN))
                     .into(mTarget);
+
         } else {
             Picasso.with(MapsActivity.this)
                     .load(f.getProfilURl())
-                    .resize(250, 250)
+                    .resize(248, 250)
                     .centerCrop()
                     .transform(new BubbleTransformation(5, Color.RED))
                     .into(mTarget);

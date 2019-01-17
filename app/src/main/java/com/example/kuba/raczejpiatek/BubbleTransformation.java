@@ -12,9 +12,9 @@ import android.graphics.Shader;
 public class BubbleTransformation implements com.squareup.picasso.Transformation {
     private static final int outerMargin = 40;
     private final int margin;
-    int color;
+    private final int color;
 
-    public BubbleTransformation(final int margin, int color) {
+    public BubbleTransformation(final int margin, final int color) {
         this.margin = margin;
         this.color = color;
     }

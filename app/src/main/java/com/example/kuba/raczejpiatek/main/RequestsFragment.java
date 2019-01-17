@@ -51,7 +51,7 @@ public class RequestsFragment extends Fragment {
         InvitefriendsList = new ArrayList<>();
         userID = getActivity().getIntent().getStringExtra(StaticVariables.KEY_FRIEND_ID);
         InvitefriendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra(StaticVariables.INVITE_FRIEND_LIST);
-        if(!InvitefriendsIdList.isEmpty() && InvitefriendsIdList != null){
+        if(InvitefriendsIdList != null && (!InvitefriendsIdList.isEmpty())){
 
 
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");

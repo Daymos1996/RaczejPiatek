@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser currentUser) {
-        Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
+      //  Toast.makeText(LoginActivity.this, "Udalo sie zalogowac ", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(LoginActivity.this, ProfilActivity.class);
       //  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -165,8 +165,8 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                          //  Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                  //  Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -193,9 +193,9 @@ public class LoginActivity extends AppCompatActivity {
                             user = auth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Błąd logowania", Toast.LENGTH_LONG).show();
-                        }
+                        } //else {
+                        //    Toast.makeText(LoginActivity.this, "Błąd logowania", Toast.LENGTH_LONG).show();
+                     //   }
                     }
                 });
 

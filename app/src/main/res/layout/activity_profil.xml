@@ -108,6 +108,7 @@
             android:gravity="center"
             android:textColor="#FF335F"
             android:textSize="20dp"
+            android:visibility="invisible"
             android:textStyle="bold" />
 
 

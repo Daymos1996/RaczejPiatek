@@ -129,6 +129,9 @@ public class ProfilActivity extends AppCompatActivity {
 
         } else if (getIntent().hasExtra(KEY_FRIEND_ID)) {
             userID = getIntent().getStringExtra(KEY_FRIEND_ID);
+            friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra(FRIEND_ID_LIST);
+            InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra(INVITE_FRIEND_LIST);
+            chatsFriendsList=(ArrayList<String>) getIntent().getSerializableExtra(CHAT_FRIEND_ID_LIST);
         } else {
             if (user != null) {
                 userID = user.getUid();

@@ -30,6 +30,7 @@ import com.example.kuba.raczejpiatek.ProfilActivity;
 import com.example.kuba.raczejpiatek.R;
 import com.example.kuba.raczejpiatek.StaticVariables;
 import com.example.kuba.raczejpiatek.chat.Chat;
+import com.example.kuba.raczejpiatek.chatList.ChatFriendsListActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.common.ConnectionResult;
@@ -63,6 +64,7 @@ import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 
+import static com.example.kuba.raczejpiatek.StaticVariables.CHAT_FRIEND_ID_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.FRIEND_ID_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.INVITE_FRIEND_LIST;
 import static com.example.kuba.raczejpiatek.StaticVariables.KEY_FRIEND_ID;
@@ -98,6 +100,7 @@ public class MapsActivity extends FragmentActivity implements
     private String userID;
     private ArrayList<String> friendsIdList;
     private ArrayList<String> InviteFriends;
+    private ArrayList<String> chatsFriendsList;
     private LatLng latLngUser;
 
     @Override
@@ -113,9 +116,10 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         userID = getIntent().getStringExtra(KEY_FRIEND_ID);
-        friendsIdList = (ArrayList<String>) getIntent().getSerializableExtra(FRIEND_ID_LIST);
-        InviteFriends = (ArrayList<String>) getIntent().getSerializableExtra(INVITE_FRIEND_LIST);
         friendsIdFromDatabaseArrayList = getIdUsersFromTableFriendsInDatabase(userIdString);
+        friendsIdList = (ArrayList<String>)getIntent().getSerializableExtra(FRIEND_ID_LIST);
+        InviteFriends=(ArrayList<String>) getIntent().getSerializableExtra(INVITE_FRIEND_LIST);
+        chatsFriendsList=(ArrayList<String>) getIntent().getSerializableExtra(CHAT_FRIEND_ID_LIST);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -151,8 +155,13 @@ public class MapsActivity extends FragmentActivity implements
                     case R.id.navigation_dashboard:
                         return true;
                     case R.id.navigation_notifications:
-                        Intent intentChat = new Intent(MapsActivity.this, Chat.class);
+                        Intent intentChat = new Intent(MapsActivity.this, ChatFriendsListActivity.class);
                         intentChat.putExtra(StaticVariables.KEY_CHAT, userIdString);
+                        intentChat.putExtra(KEY_FRIEND_ID, userID);
+                        intentChat.putExtra(KEY_USER_ID, userID);
+                        intentChat.putExtra(FRIEND_ID_LIST, friendsIdList);
+                        intentChat.putExtra(INVITE_FRIEND_LIST, InviteFriends);
+                        intentChat.putExtra(CHAT_FRIEND_ID_LIST, chatsFriendsList);
                         startActivity(intentChat);
                         break;
                     case R.id.navigation_friends:

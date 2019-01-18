@@ -66,6 +66,7 @@ public class ProfilActivity extends AppCompatActivity {
     private DatabaseReference userReference;
     private DatabaseReference friendsUserReference;
     private DatabaseReference mNotificationDatabase;
+    private DatabaseReference reference;
     private StorageReference mStorage;
     private TextView emailTextView;
     private TextView first_nameTextView;
@@ -84,6 +85,7 @@ public class ProfilActivity extends AppCompatActivity {
     private ArrayList<String> InviteFriends;
     private ArrayList<String> chatsFriendsList;
     private Toolbar mToolbar;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +102,12 @@ public class ProfilActivity extends AppCompatActivity {
         InviteFriends = new ArrayList<>();
         chatsFriendsList = new ArrayList<>();
 
+        reference=FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mNotificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
 
-        final FirebaseUser user = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
         if (user != null) {
             userID = user.getUid();
         }
@@ -746,7 +749,16 @@ public class ProfilActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
         }
         if (item.getItemId() == R.id.main_logout) {
-            //  mAuth.getInstance().signOut();
+            reference.child(user.getUid()).child("is_sharing").setValue("false")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                            } else {
+                            }
+                        }
+                    });
+
             sendToStart();
         }
 

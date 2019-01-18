@@ -198,6 +198,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 
     private void getFacebookData(JSONObject object) {

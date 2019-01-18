@@ -85,7 +85,6 @@ public class ProfilActivity extends AppCompatActivity {
     private ArrayList<String> chatsFriendsList;
     private Toolbar mToolbar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,6 +167,7 @@ public class ProfilActivity extends AppCompatActivity {
 
             }
         });
+
 
 
         first_nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -277,6 +277,7 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
+
     private void showData(DataSnapshot ds) {
         User uInfo = new User();
         if (ds.child("first_name").exists()) {
@@ -337,7 +338,6 @@ public class ProfilActivity extends AppCompatActivity {
             Picasso.with(this).load(uInfo.getProfilURl()).into(profilURL);
 
         }
-
     }
 
     public void deleteUser(String userID) {
@@ -644,18 +644,6 @@ public class ProfilActivity extends AppCompatActivity {
         friendsOtherUserReference = otherUserReference.child(FRIENDS_TABLE);
         friendsOtherUserReference.child(userID).setValue("received");
 
-        /*
-        HashMap<String,String> notificationData = new HashMap<>();
-        notificationData.put("from",otherUserID);
-        notificationData.put("type","request");
-
-        mNotificationDatabase.child(userID).push().setValue(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-        });
-        */
         userReference = myRef.child(userID);
         friendsUserReference = userReference.child(FRIENDS_TABLE);
         friendsUserReference.child(otherUserID).setValue("sent");
@@ -667,7 +655,6 @@ public class ProfilActivity extends AppCompatActivity {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
             if (ds.getValue().equals("accept")) {
                 friendsIdList.add(ds.getKey());
-                //  Toast.makeText(ProfilActivity.this, String.valueOf(friendsIdList.size()), Toast.LENGTH_SHORT).show();
             }
         }
     }

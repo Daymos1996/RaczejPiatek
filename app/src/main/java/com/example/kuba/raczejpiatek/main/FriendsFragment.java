@@ -50,7 +50,7 @@ public class FriendsFragment extends Fragment {
 
         userID = getActivity().getIntent().getStringExtra(StaticVariables.KEY_FRIEND_ID);
         friendsIdList = (ArrayList<String>) getActivity().getIntent().getSerializableExtra(StaticVariables.FRIEND_ID_LIST);
-        if(!friendsIdList.isEmpty()) {
+        if(friendsIdList != null && (!friendsIdList.isEmpty())) {
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
             friendsRecyclerViewAdapter = new FriendsRecyclerViewAdapter(getActivity().getBaseContext(), userDatabaseRef, friendsIdList);

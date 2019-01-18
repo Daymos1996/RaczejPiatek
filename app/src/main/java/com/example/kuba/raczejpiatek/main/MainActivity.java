@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
+
         mViewPager = (ViewPager) findViewById(R.id.main_tabPager);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -124,10 +125,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null){
-
+        if (currentUser == null) {
             sendToStart();
-
         }
     }
 
@@ -156,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
          }
 
          if(item.getItemId()== R.id.profile){
+             FirebaseUser currentUser = mAuth.getCurrentUser();
+             mAuth.updateCurrentUser(currentUser);
              Intent profileIntent = new Intent(MainActivity.this,ProfilActivity.class);
              startActivity(profileIntent);
          }

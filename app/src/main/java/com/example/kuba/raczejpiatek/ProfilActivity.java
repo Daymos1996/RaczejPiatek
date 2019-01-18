@@ -25,6 +25,7 @@ import com.example.kuba.raczejpiatek.chatList.ChatFriendsListActivity;
 import com.example.kuba.raczejpiatek.login.LoginActivity;
 import com.example.kuba.raczejpiatek.main.MainActivity;
 import com.example.kuba.raczejpiatek.map.MapsActivity;
+import com.example.kuba.raczejpiatek.register.Security;
 import com.example.kuba.raczejpiatek.user.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -475,7 +476,11 @@ public class ProfilActivity extends AppCompatActivity {
                     DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Users").child(userID);
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     user.updatePassword(name);
-                    dR.child("password").setValue(name);
+                    try {
+                        dR.child("password").setValue(Security.encrypt(name));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     toastMessage("password update");
                     b.dismiss();
                 }
